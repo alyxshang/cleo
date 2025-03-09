@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE instance_info SET smtp_server = $1 WHERE instance_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "95622c983fe2a1900fe8ac2ebfb6cc58b29db092a705c72fc0b588d1c01f3439"
+}

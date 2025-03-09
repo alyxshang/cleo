@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE cleo_users SET pfp_url = $1 WHERE user_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "6cdac5120a3635b7600d6f78f89c6bf1b6a1f690bf26a86ce66a5e3f8ab64d4e"
+}

@@ -16,6 +16,7 @@ CREATE TABLE cleo_users(
     is_verified BOOLEAN NOT NULL,
     username TEXT NOT NULL,
     pwd TEXT NOT NULL,
+    email_verif_code TEXT,
     email_addr TEXT NOT NULL,
     pfp_url TEXT NOT NULL,
     is_admin BOOLEAN NOT NULL

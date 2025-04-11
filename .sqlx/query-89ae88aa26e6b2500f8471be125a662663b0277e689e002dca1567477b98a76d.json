@@ -30,16 +30,21 @@
       },
       {
         "ordinal": 5,
-        "name": "email_addr",
+        "name": "email_verif_code",
         "type_info": "Text"
       },
       {
         "ordinal": 6,
-        "name": "pfp_url",
+        "name": "email_addr",
         "type_info": "Text"
       },
       {
         "ordinal": 7,
+        "name": "pfp_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
         "name": "is_admin",
         "type_info": "Bool"
       }
@@ -55,6 +60,7 @@
       false,
       false,
       false,
+      true,
       false,
       false,
       false

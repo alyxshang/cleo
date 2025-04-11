@@ -3,11 +3,16 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Exporting this
+/// crate's tests module.
+#[cfg(test)]
+pub mod tests;
+
 /// Exporting the
 /// module for reading
 /// and writing to and
 /// from the database.
-pub mod rw;
+pub mod db;
 
 /// Exporting the
 /// module containing

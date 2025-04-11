@@ -19,7 +19,10 @@ use std::error::Error;
 /// "Formatter" trait.
 use std::fmt::Formatter;
 
-use actix_web::error;
+/// Importing the "ResponseErr"
+/// trait to implement it for the
+/// "CleoErr" structure.
+use actix_web::error::ResponseError;
 
 /// A data structure for
 /// storing and handling errors.
@@ -60,5 +63,3 @@ impl Display for CleoErr {
         return write!(f,"{}",self.details);
     }
 }
-
-impl error::ResponseError for CleoErr {}

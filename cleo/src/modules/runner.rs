@@ -50,11 +50,6 @@ use actix_web::HttpServer;
 /// persistent app data.
 use super::units::AppData;
 
-/// Importing the function to 
-/// create a user to create the
-/// first administrator.
-use super::rw::create_user;
-
 /// Importing the model for
 /// users for explicit typing.
 use super::models::CleoUser;
@@ -68,12 +63,6 @@ use sqlx::postgres::Postgres;
 /// function to create a connection
 /// to the PostgreSQL database.
 use super::utils::create_connection;
-
-/// Importing the function to
-/// create instance info to save
-/// instance info before the API
-/// runs.
-use super::rw::create_instance_info;
 
 /// Importing the "DefaultHeaders" structure
 /// to set custom headers.

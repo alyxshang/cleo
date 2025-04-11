@@ -56,10 +56,16 @@ use sqlx::postgres::Postgres;
 /// sending of emails.
 use lettre::transport::AsyncTransport;
 
+/// Importing the structure to send SMTP
+/// messages asynchronously.
 use lettre::transport::smtp::AsyncSmtpTransport;
 
+/// Importing the structure to receive responses
+/// from sending SMTP messages.
 use lettre::transport::smtp::response::Response;
 
+/// Importing the structure for supplying credentials
+/// to "lettre".
 use lettre::transport::smtp::authentication::Credentials;
 
 /// Creates and returns the SHA-256 sum
@@ -128,16 +134,19 @@ impl TimeNow{
         let seconds: String = format!("{}",curr_time.format("%S"));
         let millis: String = format!("{}",curr_time.format("%f"));
         TimeNow {
-            year: year,
-            month: month,
-            day: day,
-            hours: hours,
-            minutes: minutes,
-            seconds: seconds,
-            millis: millis
+            year,
+            month,
+            day,
+            hours,
+            minutes,
+            seconds,
+            millis
         }
     }
-
+    
+    /// Implementing a generic function
+    /// to return a string representation
+    /// of this structure.
     pub fn to_string(&self) -> String {
         format!(
             "{}{}{}{}{}{}{}",

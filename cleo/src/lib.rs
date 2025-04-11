@@ -8,12 +8,6 @@ Licensed under the FSL v1.
 pub mod modules;
 
 /// Re-exporting the
-/// module for reading
-/// and writing to and
-/// from the database.
-pub use modules::rw::*;
-
-/// Re-exporting the
 /// module containing
 /// this crate's
 /// error-handling

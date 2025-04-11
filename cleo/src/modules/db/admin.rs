@@ -5,22 +5,14 @@ Licensed under the FSL v1.
 
 use sqlx::Pool;
 use sqlx::query;
-use bcrypt::hash;
-use bcrypt::verify;
 use sqlx::query_as;
-use super::err::CleoErr;
-use bcrypt::DEFAULT_COST;
-use crate::utils::TimeNow;
-use crate::models::UserKey;
-use crate::models::UserFile;
-use crate::models::CleoUser;
-use crate::models::UserPost;
 use sqlx::postgres::Postgres;
-use crate::utils::hash_string;
-use crate::utils::generate_key;
-use crate::models::UserAPIToken;
-use crate::models::ExtraContentField;
-use crate::models::InstanceInformation;
+use crate::modules::err::CleoErr;
+use crate::modules::models::UserKey;
+use crate::modules::models::CleoUser;
+use crate::modules::utils::hash_string;
+use super::tokens::get_user_from_token;
+use crate::modules::models::InstanceInformation;
 
 // Done. Has service.
 pub async fn get_instance_users(

@@ -7,7 +7,8 @@ CREATE TABLE instance_info(
     instance_name TEXT NOT NULL,
     smtp_server TEXT NOT NULL,
     smtp_username TEXT NOT NULL,
-    smtp_pass TEXT NOT NULL
+    smtp_pass TEXT NOT NULL,
+    file_dir TEXT NOT NULL,
 );
 
 CREATE TABLE cleo_users(

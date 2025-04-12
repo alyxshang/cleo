@@ -8,6 +8,19 @@ Licensed under the FSL v1.
 /// to derive it.
 use serde::Deserialize;
 
+/// Importing the "Json" structure
+/// to accept JSON data with uploaded
+/// files.
+use actix_multipart::form::json::Json;
+
+/// Importing the "MultipartForm" trait
+/// for explicit typing and to upload files.
+use actix_multipart::form::MultipartForm;
+
+/// Importing the "TempFile" structure to
+/// upload files and save them temporarily.
+use actix_multipart::form::tempfile::TempFile;
+
 /// An enum to describe
 /// all possible types of
 /// content that can be
@@ -167,3 +180,21 @@ pub struct UserKeyDeletionPayload {
     pub api_token: String,
     pub key_id: String
 }
+
+/// A structure for capturing
+/// the metadata of a user-uploaded
+/// file.
+#[derive(Debug, Deserialize)]
+pub struct UserFileMetadata{
+    pub name: String,
+}
+
+/// A structure to simulate a 
+/// form for uploading a file.
+#[derive(Debug, MultipartForm)]
+pub struct UserFileUpload{
+    #[multipart(limit = "50MB")]
+    file: TempFile,
+    json: Json<UserFileMetadata>
+}
+

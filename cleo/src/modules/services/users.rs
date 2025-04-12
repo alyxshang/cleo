@@ -17,262 +17,104 @@ use actix_web::Result;
 /// persistent app data.
 use actix_web::web::Data;
 
-/// Importing the "Path"
-/// structure to read URL
-/// paths.
-use actix_web::web::Path;
-
 /// Importing the "Json"
 /// structure to return JSON
 /// responses.
 use actix_web::web::Json;
 
-/// Importing this crate's
-/// error structure.
-use crate::err::CleoErr;
-
-/// Importing the "AppData"
-/// structure to register
-/// persistent app data.
-use crate::units::AppData;
-
-/// Importing the function
-/// to update a user's
-/// profile picture.
-use crate::rw::update_pfp;
-
-/// Importing the function
-/// to create a new user.
-use crate::rw::create_user;
-
-/// Importing the model for
-/// user keys for explicit
-/// typing.
-use crate::models::UserKey;
-
-/// Importing the model for
-/// users for explicit typing.
-use super::models::CleoUser;
-
-/// Importing the model for
-/// user files for explicit typing.
-use super::models::UserFile;
-
-/// Importing the model for
-/// user posts for explicit
-/// typing.
-use super::models::UserPost;
-
 /// Importing the function
 /// to return a HTTP response.
 use actix_web::HttpResponse;
 
-/// Importing the function to
-/// update the email of a user.
-use super::rw::update_email;
+/// Importing this crate's
+/// error structure.
+use crate::modules::err::CleoErr;
 
-/// Importing the function to
-/// delete an API token.
-use super::rw::delete_token;
-
-/// Importing the function
-/// to retrieve all the keys
-/// a user has made.
-use super::rw::get_user_keys;
-
-/// Importing the function to
-/// send emails.
-use super::utils::send_email;
-
-/// Importing the function
-/// to edit the password of
-/// the user for the instance's
-/// SMTP server.
-use super::rw::edit_smtp_pass;
-
-/// Importing the function to
-/// retrieve all the posts a 
-/// user has made.
-use super::rw::get_user_posts;
-
-/// Importing the function to
-/// retrieve all the files 
-/// a user has uploaded.
-use super::rw::get_user_files;
-
-/// Importing the data structure
-/// for returning data on all keys
-/// a user has created.
-use super::responses::UserKeys;
-
-/// Importing the function to
-/// update the username of a user.
-use super::rw::update_username;
-
-/// Importing the function to
-/// create a user key.
-use super::rw::create_user_key;
-
-/// Importing the function to
-/// delete a user key.
-use super::rw::delete_user_key;
-
-/// Importing the function to
-/// update the password of a user.
-use super::rw::update_password;
-
-/// Importing the data structure
-/// for returning data on all posts
-/// a user has created.
-use super::responses::UserPosts;
-
-/// Importing the function to
-/// delete a user file.
-use super::rw::delete_user_file;
-
-/// Importing the enum to describe
-/// all possible types of content.
-use super::payloads::ContentType;
+/// Importing the "AppData"
+/// structure to register
+/// persistent app data.
+use crate::modules::units::AppData;
 
 /// Importing the model for
-/// user API keys for explicit
-/// typing.
-use super::models::UserAPIToken;
+/// users for explicit typing.
+use crate::modules::models::CleoUser;
+
+/// Importing the function to send
+/// emails.
+use crate::modules::utils::send_email;
+
+/// Importing the function
+/// to update a user's
+/// profile picture.
+use crate::modules::db::users::update_pfp;
+
+/// Importing the function
+/// to create a new user.
+use crate::modules::db::users::create_user;
 
 /// Importing the function to
-/// create a post for a user.
-use super::rw::create_user_post;
-
-/// Importing the function to
-/// update the text of post.
-use super::rw::update_post_text;
-
-/// Importing the data structure
-/// for returning data on all files
-/// a user has created.
-use super::responses::UserFiles;
-
-/// Importing the function to get
-/// instance information.
-use super::rw::get_instance_info;
-
-/// Importing the function to get
-/// a list of instance users.
-use super::rw::get_instance_users;
-
-/// Importing the function to edit
-/// the name of an instance.
-use super::rw::edit_instance_name;
-
-/// Importing the function to update
-/// username of the instance's SMTP
-/// server.
-use super::rw::edit_smtp_username;
-
-/// Importing the function to delete
-/// a user from the database.
-use super::rw::delete_user_from_db;
-
-/// Importing the function to update
-/// the name of a Cleo user.
-use super::rw::update_display_name;
-
-/// Importing the function to retrieve
-/// a list of instance admins.
-use super::rw::get_instance_admins;
-
-/// Importing the structure for
-/// submitting payloads to
-/// carry out actions for
-/// user keys.
-use super::payloads::UserKeyPayload;
+/// update the email of a user.
+use crate::modules::db::users::update_email;
 
 /// Importing the data structure
 /// for returning info on whether
 /// a write operation was successful
 /// or not.
-use super::responses::StatusResponse;
+use crate::modules::responses::StatusResponse;
 
-/// Importing the data structure for
-/// submitting a payload that contains
-/// info for deleting an API token.
-use super::payloads::DelTokenPayload;
+/// Importing the function to
+/// update the username of a user.
+use crate::modules::db::users::update_username;
 
-/// Importing the structure for 
-/// submitting payloads for actions
-/// that only require an API token.
-use super::payloads::TokenOnlyPayload;
+/// Importing the function to
+/// update the password of a user.
+use crate::modules::db::users::update_password;
 
-/// Importing the function to edit
-/// the hostname of an instance.
-use super::rw::edit_instance_hostname;
-
-/// Importing the data structure for
-/// submitting a payload for updating
-/// a post a user has made.
-use super::payloads::UpdatePostPayload;
-
-/// Importing the data structure for
-/// submitting a payload for deleting
-/// a post a user has made.
-use super::payloads::DeletePostPayload;
-
-/// Importing the data structure for
-/// returning information a created 
-/// API token.
-use super::responses::APITokenResponse;
-
-/// Importing the structure to return
-/// info on an instance.
-use super::responses::InstanceResponse;
-
-/// Importing the data structure for
-/// returning information on created
-/// posts.
-use super::responses::UserPostResponse;
-
-/// Importing the structure to
-/// return info on user files.
-use super::responses::UserFileResponse;
-
-/// Importing the structure for a 
-/// payload to carry out actions
-/// requiring higher privileges.
-use super::payloads::AuthActionPayload;
-
-/// Importing the model containing info
-/// on the instance.
-use super::models::InstanceInformation;
+/// Importing the structure for modelling instance
+/// information in the database for explicit
+/// typing.
+use crate::modules::models::InstanceInformation;
 
 /// Importing the structure for
 /// a payload that is used for
 /// changing information about a
 /// user.
-use super::payloads::UserChangePayload;
+use crate::modules::payloads::UserChangePayload;
 
-/// Importing the function to create
-/// an API token for a Cleo user.
-use super::rw::create_api_token_for_user;
+/// Importing the structure for submitting payloads
+/// for making auth-related requests.
+use crate::modules::payloads::AuthActionPayload;
 
 /// Importing the data structure for
 /// submitting payloads for creating 
 /// new users.
 use crate::modules::payloads::UserCreationPayload;
 
-/// Importing the data structure for submitting
-/// a payload for deleting a file a user has
-/// uploaded.
-use crate::modules::payloads::DeleteUserFilePayload;
+/// Importing the function to delete
+/// a user from the database.
+use crate::modules::db::users::delete_user_from_db;
+
+/// Importing the function to
+/// retrieve instance information
+/// from the database.
+use crate::modules::db::general::get_instance_info;
+
+/// Importing the function to update
+/// the name of a Cleo user.
+use crate::modules::db::users::update_display_name;
 
 /// Importing the data structure for
 /// returning information on created
 /// users.
 use crate::modules::responses::UserCreationResponse;
 
-/// This function contains the
-/// service function for creating
-/// a new user. If this operation
-/// fails, an HTTP error is returned.
+/// This function is the API service
+/// function for creating a user.
+/// If the received request and resulting
+/// operation are both valid, an instance of
+/// the saved extra content field as JSON
+/// is returned. In any other case an error 
+/// is returned.
 #[post("/user/create")]
 pub async fn create_user_service(
     payload: Json<UserCreationPayload>,
@@ -324,10 +166,13 @@ pub async fn create_user_service(
     
 }
 
-/// This function contains the service
-/// function that attempts to edit a 
-/// user's username. If this operation
-/// fails, an HTTP error is returned.
+/// This function is the API service
+/// function for editing a user's
+/// username. If the received request 
+/// and resulting operation are both valid, an 
+/// instance of the "StatusResponse" with a 
+/// boolean flag is returned as a JSON response. 
+/// In any other case an error is returned.
 #[post("/user/update/username")]
 pub async fn update_username_service(
     payload: Json<UserChangePayload>,
@@ -345,11 +190,13 @@ pub async fn update_username_service(
     Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
 }
 
-/// This function contains the 
-/// service function that attempts
-/// to edit a user's display name.
-/// If this operation fails, an 
-/// HTTP error is returned.
+/// This function is the API service
+/// function for editing a user's
+/// display name. If the received request 
+/// and resulting operation are both valid, an 
+/// instance of the "StatusResponse" with a 
+/// boolean flag is returned as a JSON response. 
+/// In any other case an error is returned.
 #[post("/user/update/name")]
 pub async fn update_name_service(
     payload: Json<UserChangePayload>,
@@ -367,11 +214,13 @@ pub async fn update_name_service(
     Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
 }
 
-/// This function contains the 
-/// service function that attempts
-/// to edit a user's email address.
-/// If this operation fails, an 
-/// HTTP error is returned.
+/// This function is the API service
+/// function for editing a user's
+/// email address. If the received request 
+/// and resulting operation are both valid, an 
+/// instance of the "StatusResponse" with a 
+/// boolean flag is returned as a JSON response. 
+/// In any other case an error is returned.
 #[post("/user/update/email")]
 pub async fn update_email_service(
     payload: Json<UserChangePayload>,
@@ -389,12 +238,14 @@ pub async fn update_email_service(
     Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
 }
 
-/// This function contains the 
-/// service function that attempts
-/// to edit a user's profile picture.
-/// If this operation fails, an 
-/// HTTP error is returned.
-#[post("/user/update/pfp")]
+/// This function is the API service
+/// function for editing a user's
+/// profile picture. If the received request 
+/// and resulting operation are both valid, an 
+/// instance of the "StatusResponse" with a 
+/// boolean flag is returned as a JSON response. 
+/// In any other case an error is returned.
+#[post("/user/update/picture")]
 pub async fn update_pfp_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
@@ -411,11 +262,13 @@ pub async fn update_pfp_service(
     Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
 }
 
-/// This function contains the 
-/// service function that attempts
-/// to edit a user's password.
-/// If this operation fails, an 
-/// HTTP error is returned.
+/// This function is the API service
+/// function for editing a user's
+/// password. If the received request and 
+/// resulting operation are both valid, an 
+/// instance of the "StatusResponse" with a 
+/// boolean flag is returned as a JSON response. 
+/// In any other case an error is returned.
 #[post("/user/update/password")]
 pub async fn update_password_service(
     payload: Json<UserChangePayload>,
@@ -433,11 +286,13 @@ pub async fn update_password_service(
     Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
 }
 
-/// This function contains
-/// the service function that
-/// attempts to delete a user.
-/// If this operation fails, 
-/// an HTTP error is returned.
+/// This function is the API service
+/// function for deleting a user.
+/// If the received request and resulting
+/// operation are both valid, an instance of
+/// the "StatusResponse" with a boolean flag
+/// is returned as a JSON response. In any other
+/// case an error is returned.
 #[post("/user/delete")]
 pub async fn delete_user_service(
     payload: Json<AuthActionPayload>,
@@ -453,105 +308,4 @@ pub async fn delete_user_service(
         Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
     };
     Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
-}
-
-/// This function contains the
-/// service function that attempts
-/// to create an API token for a user.
-/// If this operation fails, an error
-/// is returned.
-#[post("/api_token/create")]
-pub async fn create_api_token_service(
-    payload: Json<AuthActionPayload>,
-    data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let token: UserAPIToken = match create_api_token_for_user(
-        &payload.username, 
-        &payload.password, 
-        &data.pool
-    ).await {
-        Ok(token) => token,
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let resp: APITokenResponse = APITokenResponse{
-        token_id: token.token_id,
-        token: token.token
-    };
-    Ok(HttpResponse::Ok().json(resp))
-}
-
-/// This function contains the 
-/// service function that attempts
-/// to delete an API token for a user.
-/// If this operation fails, an HTTP
-/// error is returned.
-#[post("/api_token/delete")]
-pub async fn delete_api_token_service(
-    payload: Json<DelTokenPayload>,
-    data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match delete_token(
-        &payload.token, 
-        &payload.username,
-        &payload.password, 
-        &data.pool
-    ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
-}
-
-/// This function contains the 
-/// service function that attempts
-/// to delete a file a user has
-/// uploaded. If this operation
-/// fails, an error is returned.
-#[post("/user/files/delete")]
-pub async fn delete_user_file_service(
-    payload: Json<DeleteUserFilePayload>,
-    data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match delete_user_file(
-        &payload.api_token, 
-        &payload.file_id,
-        &data.pool
-    ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
-}
-
-/// This function contains the
-/// service functions that fetches
-/// information on all files a user
-/// has uploaded. If this operation fails,
-/// an error is returned.
-#[get("/info/files")]
-pub async fn get_user_files_service(
-    payload: Json<TokenOnlyPayload>,
-    data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut sanitized: Vec<UserFileResponse> = Vec::new();
-    let files: Vec<UserFile> = match get_user_files(&payload.api_token, &data.pool).await {
-        Ok(files) => files,
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let info: InstanceInformation = match get_instance_info(&data.pool).await {
-        Ok(info) => info,
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    for file in files {
-        let resp_file: UserFileResponse = UserFileResponse{
-           user_id: file.user_id,
-           file_url: format!("{}{}", &info.hostname, &file.file_path),
-           file_name: file.file_path
-        };
-        sanitized.push(resp_file);
-    }
-    let resp: UserFiles = UserFiles{ files: sanitized };
-    Ok(HttpResponse::Ok().json(resp))
 }

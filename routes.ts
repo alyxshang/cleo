@@ -1,3 +1,4 @@
+/*
 # ADMIN
 
 /instance/admins
@@ -33,3 +34,4 @@
 /user/update/email
 /user/update/name
 /user/update/username
+*/

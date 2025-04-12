@@ -3,27 +3,61 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Importing the "Pool"
+/// structure to use a pool
+/// of connections.
 use sqlx::Pool;
+
+/// Importing the
+/// "query" macro to
+/// execute SQL queries
+/// that return nothing.
 use sqlx::query;
-use bcrypt::hash;
-use bcrypt::verify;
+
+/// Importing the
+/// "query_as" macro to
+/// execute SQL queries
+/// that return something.
 use sqlx::query_as;
-use super::err::CleoErr;
-use bcrypt::DEFAULT_COST;
-use super::utils::TimeNow;
-use super::models::UserKey;
-use super::models::UserFile;
-use super::models::CleoUser;
-use super::models::UserPost;
+
+/// Importing the "Postgres"
+/// structure to specify the 
+/// database one is connecting to.
 use sqlx::postgres::Postgres;
-use super::utils::hash_string;
-use super::utils::generate_key;
-use super::models::UserAPIToken;
-use super::models::ExtraContentField;
-use super::models::InstanceInformation;
 
+/// Importing the "CleoErr"
+/// structure to catch and
+/// handle errors.
+use crate::modules::err::CleoErr;
 
-// Done. Has service.
+/// Importing the "TimeNow"
+/// structure to get the current
+/// time.
+use crate::modules::utils::TimeNow;
+
+/// Importing the "UserKey" structure
+/// to read and write information about
+/// user keys from and to the database.
+use crate::modules::models::UserKey;
+
+/// Importing the "CleoUser" structure
+/// to read and write information about
+/// a Cleo user.
+use crate::modules::models::CleoUser;
+
+/// Importing the function to generate
+/// a user key.
+use crate::modules::utils::generate_key;
+
+/// Importing the function to retieve
+/// a user given the ID of the user.
+use crate::modules::db::users::get_user_from_token;
+
+/// This function attempts to
+/// create a user key. If this operation
+/// is successful an instance of the "UserKey"
+/// structure is returned. if this operation
+/// fails, an error is returned.
 pub async fn create_user_key(
     key_type: &String,
     api_token: &String,
@@ -72,7 +106,11 @@ pub async fn create_user_key(
     }
 }
 
-// Done.
+/// This function attempts to
+/// retrieve an instance of a
+/// user key given the key's ID.
+/// If this operation fails, an
+/// error is returned.
 pub async fn get_user_key_by_id(
     user_key_id: &String,
     pool: &Pool<Postgres>,
@@ -91,7 +129,13 @@ pub async fn get_user_key_by_id(
     Ok(user_key_obj)
 }
 
-// Done. Has service.
+/// This function attempts to 
+/// delete a user key from the
+/// database. if this operation
+/// is successful, an empty
+/// function is returned. If this
+/// operation fails, an error is 
+/// returned.
 pub async fn delete_user_key(
     api_token: &String,
     key_id: &String,
@@ -120,7 +164,11 @@ pub async fn delete_user_key(
     } 
 }
 
-// Done.
+/// this function attempts to
+/// change the status of a user
+/// key to being valid. If the operation
+/// is successful, an empty function is returned.
+/// If this operation fails, an error is returned.
 pub async fn change_user_key_status(
     api_token: &String,
     key_id: &String,
@@ -150,7 +198,12 @@ pub async fn change_user_key_status(
     }
 }
 
-// Done. Has service.
+/// This function attempts to retrieve
+/// all keys an administrator has created.
+/// If the operation is successful, a vector
+/// of instances of the "UserKey" structure
+/// is returned. If this operation fails,
+/// an error is returned.
 pub async fn get_user_keys(
     api_token: &String,
     pool: &Pool<Postgres>,
@@ -178,7 +231,12 @@ pub async fn get_user_keys(
         Err::<Vec<UserKey>, CleoErr>(CleoErr::new(&e.to_string()))
     }
 }
-// Done.
+/// This function attempts
+/// to check whether a user
+/// key exists or not. Depending
+/// on this a boolean is returned.
+/// If the operation fails, an error
+/// is returned.
 pub async fn user_key_exists(
     user_key: &String,
     pool: &Pool<Postgres>,

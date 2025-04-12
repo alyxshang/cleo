@@ -3,17 +3,64 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Importing the "Pool"
+/// structure to use a pool
+/// of connections.
 use sqlx::Pool;
+
+/// Importing the "query"
+/// macro to execute queries
+/// that return nothing.
 use sqlx::query;
+
+/// Importing the "query_as"
+/// macro to execute queries
+/// that return something.
 use sqlx::query_as;
+
+/// Importing the "Postgres"
+/// structure for explicit 
+/// typing.
 use sqlx::postgres::Postgres;
+
+/// Importing the "CleoErr"
+/// structure to catch and
+/// handle errors.
 use crate::modules::err::CleoErr;
+
+/// Importing the function to
+/// retrieve a post given the 
+/// post's ID.
+use super::posts::get_post_by_id;
+
+/// Importing the "TimeNow"
+/// structure to get the current
+/// time.
 use crate::modules::utils::TimeNow;
+
+/// Importing the "CleoUser" structure
+/// for explicit typing.
 use crate::modules::models::CleoUser;
+
+/// Importing the "UserPost" structure
+/// for explicit typing.
 use crate::modules::models::UserPost;
+
+/// Importing the function to retieve
+/// a user given the ID of the user.
+use super::tokens::get_user_from_token;
+
+/// Importing the structure representing
+/// the model in the database for an extra
+/// content field for reading and writing
+/// this entity.
 use crate::modules::models::ExtraContentField;
 
-// Done. Has service.
+/// This function attempts to create an 
+/// extra content field for a post with the given
+/// data. If the operation is successful, an instance
+/// of the "ExtraContentField" structure is returned.
+/// If this operation fails, an error is returned.
 pub async fn create_extra_field_for_post(
     api_token: &String,
     content_id: &String,
@@ -62,7 +109,13 @@ pub async fn create_extra_field_for_post(
     }
 }
 
-// Done.
+/// This function attempts to retrieve
+/// an extra content field belonging to
+/// post using the field's ID. If this 
+/// operation is successful, an instance
+/// of the "ExtraContentField" structure
+/// is returned. If this operation fails,
+/// an error is returned.
 pub async fn get_extra_field_by_id(
     field_id: &String,
     pool: &Pool<Postgres>
@@ -81,7 +134,11 @@ pub async fn get_extra_field_by_id(
     Ok(field_obj)
 }
 
-// Done. Has service.
+/// This function attempts to delete
+/// an extra content field given its
+/// ID. if the operation is successful,
+/// an empty function is returned. If the 
+/// operation fails, an error is returned.
 pub async fn delete_extra_field_for_post(
     api_token: &String,
     content_id: &String,
@@ -115,7 +172,11 @@ pub async fn delete_extra_field_for_post(
     }  
 }
 
-// Done. Has service.
+/// This function attempts to edit the
+/// key of an extra content field in the 
+/// database. If this operation is successful,
+/// an empty function is returned. If this operation
+/// fails, an error is returned.
 pub async fn edit_extra_field_key_for_post(
     api_token: &String,
     content_id: &String,
@@ -151,7 +212,11 @@ pub async fn edit_extra_field_key_for_post(
     } 
 }
 
-// Done. Has service.
+/// This function attempts to edit the
+/// key of an extra content field in the 
+/// database. If this operation is successful,
+/// an empty function is returned. If this operation
+/// fails, an error is returned.
 pub async fn edit_extra_field_value_for_post(
     api_token: &String,
     content_id: &String,

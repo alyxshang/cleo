@@ -3,26 +3,64 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Importing the
+/// "Pool" structure
+/// to accept multiple
+/// connections to a 
+/// database.
 use sqlx::Pool;
-use sqlx::query;
-use bcrypt::hash;
-use bcrypt::verify;
-use sqlx::query_as;
-use super::err::CleoErr;
-use bcrypt::DEFAULT_COST;
-use super::utils::TimeNow;
-use super::models::UserKey;
-use super::models::UserFile;
-use super::models::CleoUser;
-use super::models::UserPost;
-use sqlx::postgres::Postgres;
-use super::utils::hash_string;
-use super::utils::generate_key;
-use super::models::UserAPIToken;
-use super::models::ExtraContentField;
-use super::models::InstanceInformation;
 
-// Done. Has service.
+/// Importing the "query"
+/// macro to execute SQL
+/// queries that return 
+/// nothing.
+use sqlx::query;
+
+/// Importing the "query_as"
+/// macro to execute SQL
+/// queries that return 
+/// something.
+use sqlx::query_as;
+
+/// Importing the "Postgres"
+/// to specify the type of
+/// database one is connecting
+/// to.
+use sqlx::postgres::Postgres;
+
+/// Importing the "CleoErr"
+/// structure to ctach and handle
+/// errors.
+use crate::modules::err::CleoErr;
+
+/// Importing the "TimeNow" structure
+/// to retrieve the current time.
+use crate::modules::utils::TimeNow;
+
+/// Importing the "CleoUser" structure
+/// to read and write associated data
+/// about Cleo users.
+use crate::modules::models::CleoUser;
+
+/// Importing the "UserPost" structure
+/// to read and write information about
+/// posts written by a user.
+use crate::modules::models::UserPost;
+
+/// Importing the function to generate
+/// a hash for string.
+use crate::modules::utils::hash_string;
+
+/// Importing the "get_user_from_token" 
+/// function to retrieve an entry for a Cleo
+/// user given their API token.
+use crate::modules::db::users::get_user_from_token;
+
+/// This function attempts
+/// to create a post for a user.
+/// If the operation is successful,
+/// an instance of the "UserPost"
+/// structure is returned.
 pub async fn create_user_post(
     api_token: &String,
     content_type: &String, // "page" or "post"
@@ -67,7 +105,13 @@ pub async fn create_user_post(
     Ok(post_obj)
 }
 
-// Done.
+/// This function attempts
+/// to retrieve a post given the
+/// post's ID. If the operation 
+/// is successful, an instance
+/// of the "UserPost" model 
+/// is returend. If the operation
+/// fails, an error is returned.
 pub async fn get_post_by_id(
     content_id: &String,
     pool: &Pool<Postgres>
@@ -86,7 +130,12 @@ pub async fn get_post_by_id(
     Ok(post_obj)
 }
 
-// Done. Has service.
+/// This function attempts
+/// to update the text inside
+/// a post. If the operation is
+/// successful, an empty function
+/// is returned. If this operation fails,
+/// an error is returned.
 pub async fn update_post_text(
     api_token: &String,
     content_id: &String,
@@ -121,7 +170,11 @@ pub async fn update_post_text(
     }
 }
 
-// Done. Has service.
+/// This function attempts to
+/// delete a post. If this operation
+/// is successful, an empty function
+/// is returned. If the operation fails,
+/// an error is returned.
 pub async fn delete_post(
     api_token: &String,
     content_id: &String,
@@ -155,7 +208,12 @@ pub async fn delete_post(
     }
 }
 
-// Done. Has service.
+/// This function attempts
+/// to retrieve all of a user's
+/// posts. If this operation is succesful,
+/// a vector of instances of the "UserPost"
+/// structure is returned. If this operation
+/// fails, an error is returned.
 pub async fn get_user_posts(
     api_token: &String,
     pool: &Pool<Postgres>,

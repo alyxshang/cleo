@@ -3,26 +3,58 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Importing the "Pool"
+/// structure to accept 
+/// multiple connections
+/// to the database at the
+/// same time.
 use sqlx::Pool;
-use sqlx::query;
-use bcrypt::hash;
-use bcrypt::verify;
-use sqlx::query_as;
-use super::err::CleoErr;
-use bcrypt::DEFAULT_COST;
-use super::utils::TimeNow;
-use super::models::UserKey;
-use super::models::UserFile;
-use super::models::CleoUser;
-use super::models::UserPost;
-use sqlx::postgres::Postgres;
-use super::utils::hash_string;
-use super::utils::generate_key;
-use super::models::UserAPIToken;
-use super::models::ExtraContentField;
-use super::models::InstanceInformation;
 
-// Done. Has service.
+/// Importing the
+/// "query_as" macro to
+/// execute SQL queries
+/// that return something.
+use sqlx::query_as;
+
+/// Importing the "Postgres"
+/// structure to specify the 
+/// database one is connecting to.
+use sqlx::postgres::Postgres;
+
+/// Importing the "CleoErr" structure
+/// to catch and handle errors.
+use crate::modules::err::CleoErr;
+
+/// Importing the "UserFile" structure
+/// to read and write information about
+/// user-uploaded files.
+use crate::modules::models::UserFile;
+
+/// Importing the "CleoUser" structure
+/// to read and write information about
+/// a Cleo user.
+use crate::modules::models::CleoUser;
+
+/// Importing the "UserPost" structure
+/// to read and write information about
+/// posts written by a user.
+use crate::modules::models::UserPost;
+
+/// Importing the "InstanceInformation"
+/// structure to write information about
+/// the instance to the database.
+use crate::modules::models::InstanceInformation;
+
+/// Importing the "get_user_from_token" 
+/// function to retrieve an entry for a Cleo
+/// user given their API token.
+use crate::modules::db::users::get_user_from_token;
+
+/// This function attempts to fetch
+/// all posts a user has made. if the operation
+/// is successful, a vector of instances of the
+/// "UserPost" structure is returned. If the operation
+/// fails, an error is returned.
 pub async fn get_user_posts(
     api_token: &String,
     pool: &Pool<Postgres>,
@@ -45,7 +77,11 @@ pub async fn get_user_posts(
     Ok(user_posts)
 }
 
-// Done. Has service.
+/// This function attempts to fetch
+/// all files a user has uploaded. if the operation
+/// is successful, a vector of instances of the
+/// "UserFile" structure is returned. If the operation
+/// fails, an error is returned.
 pub async fn get_user_files(
     api_token: &String,
     pool: &Pool<Postgres>,
@@ -68,7 +104,10 @@ pub async fn get_user_files(
     Ok(user_files)
 }
 
-// Done. // Has service.
+/// This function attempts to fetch
+/// the information on a Cleo instance.
+/// If the operation fails, an error is 
+/// returned.
 pub async fn get_instance_info(
     pool: &Pool<Postgres>
 ) -> Result<InstanceInformation, CleoErr>{

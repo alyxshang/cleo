@@ -3,26 +3,86 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Importing the 
+/// "Pool" structure
+/// to accept multiple
+/// connections to the 
+/// database.
 use sqlx::Pool;
-use sqlx::query;
-use bcrypt::hash;
-use bcrypt::verify;
-use sqlx::query_as;
-use super::err::CleoErr;
-use bcrypt::DEFAULT_COST;
-use super::utils::TimeNow;
-use super::models::UserKey;
-use super::models::UserFile;
-use super::models::CleoUser;
-use super::models::UserPost;
-use sqlx::postgres::Postgres;
-use super::utils::hash_string;
-use super::utils::generate_key;
-use super::models::UserAPIToken;
-use super::models::ExtraContentField;
-use super::models::InstanceInformation;
 
-// Done. Has service.
+/// Importing the "query"
+/// macro to execute SQL
+/// queries to return
+/// nothing.
+use sqlx::query;
+
+/// Importing the function
+/// to hash a string using
+/// the "BCrypt" algorithm.
+use bcrypt::hash;
+
+/// Importing the function
+/// to verify a hashed string.
+use bcrypt::verify;
+
+/// Importing the "query_as"
+/// macro to execute SQL
+/// queries to return
+/// something.
+use sqlx::query_as;
+
+/// Importing the "DEFAULT_COST"
+/// enum from the "bcrypt" token
+/// to specify the computational
+/// cost for hashing a string.
+use bcrypt::DEFAULT_COST;
+
+/// Importing the "Postgres"
+/// structure for explicit 
+/// typing.
+use sqlx::postgres::Postgres;
+
+/// Importing the "CleoErr"
+/// structure to catch and
+/// handle errors.
+use crate::modules::err::CleoErr;
+
+/// Importing the "TimeNow"
+/// structure to get the current
+/// time.
+use crate::modules::utils::TimeNow;
+
+/// Importing the "CleoUser" structure
+/// for explicit typing.
+use crate::modules::models::CleoUser;
+
+/// Importing the function to generate
+/// a general hash of a string.
+use crate::modules::utils::hash_string;
+
+/// Importing the structure for the model
+/// for a user's API tokens to read and write
+/// from and to the database about these
+/// entities.
+use crate::modules::models::UserAPIToken;
+
+/// Importing the function to get an entry
+/// in the database for an API token given
+/// the token itself.
+use crate::modules::db::tokens::get_token;
+
+/// Importing the function to check whether
+/// a user key exists. This is relevant for
+/// signing users up.
+use crate::modules::db::keys::user_key_exists;
+
+/// This function attempts
+/// to create a user in the database.
+/// If this operation fails, an error 
+/// is returned. If this operation is
+/// successful, an instance of the
+/// "CleoUser" structure is
+/// returned.
 pub async fn create_user(
     username: &String,
     display_name: &String,
@@ -99,7 +159,10 @@ pub async fn create_user(
     Ok(res)
 }
 
-// Done.
+/// This function attempts to retrieve
+/// an instance of the "CleoUser" structure
+/// given a user's ID. If this operation
+/// fails, an error is returned.
 pub async fn get_user_by_id(
     id: &String, 
     pool: &Pool<Postgres>
@@ -111,7 +174,10 @@ pub async fn get_user_by_id(
     Ok(user_obj)
 }
 
-// Done.
+/// This function attempts to retrieve
+/// an instance of the "CleoUser" structure
+/// given a user's handle. If this operation
+/// fails, an error is returned.
 pub async fn get_user_by_username(
     username: &String, 
     pool: &Pool<Postgres>
@@ -127,7 +193,7 @@ pub async fn set_verified(
     user_id: &str,
     pool: &Pool<Postgres>
 ) -> Result<(), CleoErr> {
-    let user: CleoUser = match get_user_by_id(user_id, pool).await {
+    let user: CleoUser = match get_user_by_id(&user_id.to_string(), &pool).await {
         Ok(user) => user,
         Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
     };
@@ -145,6 +211,13 @@ pub async fn set_verified(
     Ok(update_op)
 }
 
+/// This function attempts to retrieve
+/// an instance of the "CleoUser" structure
+/// given the user's current email token.
+/// If this operation is successful, an
+/// instance of the "CleoUser" structure
+/// is returned. If this operation fails,
+/// an error is returned.
 pub async fn get_user_from_email_token(
     token: &str,
     pool: &Pool<Postgres>
@@ -163,7 +236,12 @@ pub async fn get_user_from_email_token(
     Ok(uat_obj)
 }
 
-// Done. Has service.
+/// This function attempts to
+/// update the username of a user.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn update_username(
     api_token: &String,
     new_username: &String,
@@ -187,7 +265,12 @@ pub async fn update_username(
     Ok(update_op)
 }
 
-// Done. Has service.
+/// This function attempts to
+/// update the name of a user.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn update_display_name(
     api_token: &String,
     new_name: &String,
@@ -211,7 +294,12 @@ pub async fn update_display_name(
     Ok(update_op)
 }
 
-// Done.
+/// This function attempts to
+/// update the verified-status of a user.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn update_verified(
     verified: &bool,
     user_id: &String,
@@ -231,7 +319,12 @@ pub async fn update_verified(
     Ok(update_op)
 }
 
-// Done. Has service.
+/// This function attempts to
+/// update the email of a user.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn update_email(
     api_token: &String,
     new_email: &String,
@@ -255,7 +348,12 @@ pub async fn update_email(
     Ok(update_op)
 }
 
-// done. Has service.
+/// This function attempts to
+/// update the profile picture of a user.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn update_pfp(
     api_token: &String,
     new_pfp_url: &String,
@@ -279,7 +377,12 @@ pub async fn update_pfp(
     Ok(update_op)
 }
 
-// Done. Has service.
+/// This function attempts to
+/// update the password of a user.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn update_password(
     api_token: &String,
     new_password: &String,
@@ -307,7 +410,12 @@ pub async fn update_password(
     Ok(update_op)
 }
 
-// Done. Has service.
+/// This function attempts to delete
+/// a user created in the database.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn delete_user_from_db(
     username: &String,
     password: &String,
@@ -340,110 +448,10 @@ pub async fn delete_user_from_db(
     }
 }
 
-// Done. Has service.
-pub async fn create_api_token_for_user(
-    username: &String,
-    password: &String,
-    pool: &Pool<Postgres>
-) -> Result<UserAPIToken, CleoErr> {
-    let user_obj: CleoUser = match get_user_by_username(username, pool).await {
-        Ok(user_obj) => user_obj,
-        Err(e) => return Err::<UserAPIToken, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let verified: bool = match verify(password, &user_obj.pwd){
-        Ok(verified) => verified,
-        Err(e) => return Err::<UserAPIToken, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    if verified{
-        let token_id: String = hash_string(&format!("{}{}", user_obj.username, TimeNow::new().to_string()));
-        let token: String = hash_string(&format!("{}{}", user_obj.user_id, TimeNow::new().to_string()));
-        let uat_obj: UserAPIToken = UserAPIToken{
-            user_id: user_obj.user_id.clone(),
-            token_id: token_id,
-            token: token.clone()
-        };
-        let _insert_op = match query!(
-            "INSERT INTO user_api_tokens (user_id, token_id, token) VALUES ($1, $2, $3)",
-            uat_obj.user_id,
-            uat_obj.token_id,
-            uat_obj.token
-        )
-            .execute(pool)
-            .await
-        {
-            Ok(_feedback) => {},
-            Err(e) => return Err::<UserAPIToken, CleoErr>(CleoErr::new(&e.to_string()))
-        };
-        let token_obj: UserAPIToken = match get_token(&token, pool).await {
-            Ok(token_obj) => token_obj,
-            Err(e) => return Err::<UserAPIToken, CleoErr>(CleoErr::new(&e.to_string()))
-        };
-        Ok(token_obj)
-    }
-    else {
-        let e: String = format!("Could not verify password for user with the username \"{}\"", username);
-        Err::<UserAPIToken, CleoErr>(CleoErr::new(&e.to_string()))
-    }
-}
-
-// Done.
-pub async fn get_token(
-    token: &String,  
-    pool: &Pool<Postgres>
-) -> Result<UserAPIToken, CleoErr>{
-    let uat_obj: UserAPIToken = match query_as!(
-        UserAPIToken,
-        "SELECT * FROM user_api_tokens WHERE token = $1", 
-        token
-    )
-        .fetch_one(pool)
-        .await 
-    {
-        Ok(uat_obj) => uat_obj,
-        Err(e) => return Err::<UserAPIToken, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    Ok(uat_obj)
-}
-
-// Done. Has service.
-pub async fn delete_token(
-    token: &String,
-    username: &String,
-    password: &String,
-    pool: &Pool<Postgres>
-) -> Result<(), CleoErr> {
-    let user_obj: CleoUser = match get_user_by_username(username, pool).await {
-        Ok(user_obj) => user_obj,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let verified: bool = match verify(password, &user_obj.pwd){
-        Ok(verified) => verified,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    if verified{
-        let token_obj: UserAPIToken = match get_token(token, pool).await {
-            Ok(token_obj) => token_obj,
-            Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-        };
-        let del_op: () = match query!(
-            "DELETE FROM user_api_tokens WHERE token_id = $1", 
-            token_obj.token_id
-        )
-            .execute(pool)
-            .await 
-        {
-            Ok(_feedback) => {},
-            Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-        };
-        Ok(del_op)
-    }
-    else {
-        let e: String = format!("Could not verify password for user with the username \"{}\"", username);
-        Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    }
-}
-
-// Done.
+/// This function attempts to retrieve
+/// an instance of the "CleoUser" sructure
+/// from the database given their API token.
+/// If this operation fails, an error is returned.
 pub async fn get_user_from_token(
     token: &String,
     pool: &Pool<Postgres>
@@ -459,7 +467,11 @@ pub async fn get_user_from_token(
     Ok(user_obj)
 }
 
-// Done.
+/// This function attempts
+/// to check wheter a user exists
+/// in the database. Depending on this,
+/// a boolean is returned. If this operation
+/// fails, an error is returned.
 pub async fn user_exists(
     user_id: &String,
     pool: &Pool<Postgres>,

@@ -3,18 +3,65 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Importing the 
+/// "Pool" structure
+/// to accept multiple
+/// connections to the 
+/// database.
 use sqlx::Pool;
+
+/// Importing the "query"
+/// macro to execute SQL
+/// queries to return
+/// nothing.
 use sqlx::query;
+
+/// Importing the "query_as"
+/// macro to execute SQL
+/// queries to return
+/// something.
 use sqlx::query_as;
+
+/// Importing the "Postgres"
+/// structure to specify which
+/// database one is connecting
+/// to.
 use sqlx::postgres::Postgres;
+
+/// Importing the "CleoErr"
+/// structure to catch and handle
+/// errors.
 use crate::modules::err::CleoErr;
-use crate::modules::models::UserKey;
+
+/// Importing the "CleoUser" model
+/// to read and write information
+/// about users to and from the 
+/// database.
 use crate::modules::models::CleoUser;
+
+/// Importing the "hash_string" 
+/// function to generate hashes for
+/// strings.
 use crate::modules::utils::hash_string;
+
+/// Importing the "get_user_from_token"
+/// function to retrieve a Cleo
+/// user using an API token.
 use super::tokens::get_user_from_token;
+
+/// Importing the "InstanceInformation"
+/// structure to write information about
+/// the instance to the database.
 use crate::modules::models::InstanceInformation;
 
-// Done. Has service.
+/// This function attempts to
+/// retrieve a list of users
+/// present on a Cleo instance.
+/// If the operation is successful,
+/// a vector containing  instances
+/// of the "CleoUser" structure is 
+/// returned. If the operation fails,
+/// an error is returned.
 pub async fn get_instance_users(
     api_token: &String,
     pool: &Pool<Postgres>,
@@ -43,7 +90,14 @@ pub async fn get_instance_users(
     }
 }
 
-// Done. Has service.
+/// This function attempts to
+/// retrieve a list of admins
+/// present on a Cleo instance.
+/// If the operation is successful,
+/// a vector containing  instances
+/// of the "CleoUser" structure is 
+/// returned. If the operation fails,
+/// an error is returned.
 pub async fn get_instance_admins(
     api_token: &String,
     pool: &Pool<Postgres>,
@@ -72,36 +126,11 @@ pub async fn get_instance_admins(
     }
 }
 
-// Done. Has service.
-pub async fn get_user_keys(
-    api_token: &String,
-    pool: &Pool<Postgres>,
-) -> Result<Vec<UserKey>, CleoErr>{
-    let user: CleoUser = match get_user_from_token(api_token, pool).await {
-        Ok(user) => user,
-        Err(e) => return Err::<Vec<UserKey>, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    if user.is_admin{
-        let user_keys: Vec<UserKey> = match query_as!(
-            UserKey,
-            "SELECT * FROM user_keys WHERE user_id = $1",
-            user.user_id
-        )   
-            .fetch_all(pool)
-            .await 
-        {
-            Ok(user_keys) => user_keys,
-            Err(e) => return Err::<Vec<UserKey>, CleoErr>(CleoErr::new(&e.to_string()))
-        };
-        Ok(user_keys)
-    }
-    else {
-        let e: String = format!("User is not an administrator.");
-        Err::<Vec<UserKey>, CleoErr>(CleoErr::new(&e.to_string()))
-    }
-}
-
-// Done.
+/// This function attempts to write
+/// instance information to the database.
+/// If this operation is successful,
+/// a 0 is returned. If this operation fails,
+/// an error is returned.
 pub async fn create_instance_info(
     pool: &Pool<Postgres>,
     smtp_server: &String,
@@ -139,7 +168,12 @@ pub async fn create_instance_info(
     Ok(result)
 }
 
-// Done. // Has service.
+/// This function attempts to
+/// edit the instance's hostname
+/// and save this information in the database.
+/// If this operation is successful, an empty function
+/// is returned. If this operation fails, an error is
+/// returned.
 pub async fn edit_instance_hostname(
     api_token: &String,
     new_hostname: &String,
@@ -173,7 +207,12 @@ pub async fn edit_instance_hostname(
     }
 }
 
-// Done. // Has service.
+/// This function attempts to
+/// edit the instance's name
+/// and save this information in the database.
+/// If this operation is successful, an empty function
+/// is returned. If this operation fails, an error is
+/// returned.
 pub async fn edit_instance_name(
     api_token: &String,
     new_name: &String,
@@ -207,7 +246,12 @@ pub async fn edit_instance_name(
     }
 }
 
-// Done. // Has service.
+/// This function attempts to edit the
+/// username of the SMTP server's user
+/// and save this information in the database.
+/// If this operation is successful, an empty function
+/// is returned. If this operation fails, an error is
+/// returned.
 pub async fn edit_smtp_username(
     api_token: &String,
     new_name: &String,
@@ -241,7 +285,12 @@ pub async fn edit_smtp_username(
     }
 }
 
-// Done. // Has service.
+/// This function attempts to edit the
+/// password of the SMTP server's user
+/// and save this information in the database.
+/// If this operation is successful, an empty function
+/// is returned. If this operation fails, an error is
+/// returned.
 pub async fn edit_smtp_pass(
     api_token: &String,
     new_name: &String,
@@ -275,7 +324,12 @@ pub async fn edit_smtp_pass(
     }
 }
 
-// Done. Has service.
+/// This function attempts to edit the
+/// address of the instance's SMTP server
+/// and save this information in the database.
+/// If this operation is successful, an empty function
+/// is returned. If this operation fails, an error is
+/// returned.
 pub async fn edit_instance_smtp_server(
     api_token: &String,
     new_smtp_server: &String,

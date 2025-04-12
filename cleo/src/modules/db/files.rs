@@ -3,23 +3,59 @@ Cleo by Alyx Shang.
 Licensed under the FSL v1.
 */
 
+/// Importing the "Pool"
+/// structure to accept
+/// multiple connections
+/// to a Postgres database.
 use sqlx::Pool;
-use sqlx::query;
-use bcrypt::hash;
-use bcrypt::verify;
-use sqlx::query_as;
-use crate::modules::err::CleoErr;
-use bcrypt::DEFAULT_COST;
-use crate::modules::utils::TimeNow;
-use crate::modules::models::UserFile;
-use crate::moduls::models::CleoUser;
-use super::models::UserPost;
-use sqlx::postgres::Postgres;
-use super::utils::hash_string;
-use super::utils::generate_key;
-use super::models::UserAPIToken;
 
-// Done. PENDING.
+/// Importing the
+/// "query" macro to
+/// execute SQL queries
+/// that return nothing.
+use sqlx::query;
+
+/// Importing the
+/// "query_as" macro to
+/// execute SQL queries
+/// that return something.
+use sqlx::query_as;
+
+/// Importing the "Postgres"
+/// structure to specify the 
+/// database one is connecting to.
+use sqlx::postgres::Postgres;
+
+/// Importing the "CleoErr" structure
+/// to catch and handle errors.
+use crate::modules::err::CleoErr;
+
+/// Importing the "TimeNow" structure
+/// to get the current time.
+use crate::modules::utils::TimeNow;
+
+/// Importing the "UserFile" structure
+/// to read and write information about
+/// user-uploaded files.
+use crate::modules::models::UserFile;
+
+/// Importing the "CleoUser" structure
+/// to read and write information about
+/// a Cleo user.
+use crate::modules::models::CleoUser;
+
+/// Importing the "get_user_from_token" 
+/// function to retrieve a user using
+/// their API token.
+use crate::modules::db::users::get_user_from_token;
+
+/// This function attempts to
+/// save the path of an uploaded
+/// file for a user in the database.
+/// If this operation is successful,
+/// an instance of the "UserFile" model
+/// is returned. If this operation fails
+/// an error is returned.
 pub async fn create_user_file(
     api_token: &String,
     file_path: &String,
@@ -54,7 +90,13 @@ pub async fn create_user_file(
     Ok(file_obj)
 }
 
-// Done.
+/// This function attempts to 
+/// retrieve an instance of the
+/// "UserFile" model given the file's
+/// ID. If the operation is successful,
+/// an instance of the "UserFile" model
+/// is returned. If this operation fails,
+/// an error is returned.
 pub async fn get_file_by_id(
     file_id: &String,
     pool: &Pool<Postgres>,
@@ -73,7 +115,13 @@ pub async fn get_file_by_id(
     Ok(file_obj)
 }
 
-// Done. has service.
+/// This function attempts to 
+/// delete a record for a file
+/// uploaded by a user. If this
+/// operation fails, an error is 
+/// returned. If the operation is
+/// successful, an empty function
+/// is returned.
 pub async fn delete_user_file(
     api_token: &String,
     file_id: &String,
@@ -106,7 +154,16 @@ pub async fn delete_user_file(
     } 
 }
 
-// Done. Has service.
+/// This function attempts
+/// to retrieve a list of 
+/// all records for files
+/// uploaded by a user given
+/// a user's API token. If this
+/// operation is successful,
+/// a vector of instances of
+/// the "UserFile" model is returned.
+/// If this operation fails, an error
+/// is returned.
 pub async fn get_user_files(
     api_token: &String,
     pool: &Pool<Postgres>,

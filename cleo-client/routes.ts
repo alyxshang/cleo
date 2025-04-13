@@ -22,11 +22,14 @@
 /files/delete
 /files/serve/{filename}
 
+# GENERAL
+/posts/all
+/files/all
+
 # POSTS
 /posts/create
 /posts/update
 /posts/delete
-/posts/all
 
 # API TOKENS
 /token/create

@@ -17,6 +17,11 @@
 # EMAIL
 /email/{token}
 
+# FILES
+/files/create
+/files/delete
+/files/serve/{filename}
+
 # POSTS
 /posts/create
 /posts/update

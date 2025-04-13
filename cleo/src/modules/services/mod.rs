@@ -10,6 +10,13 @@ Licensed under the FSL v1.
 /// user-created posts.
 pub mod ecf;
 
+/// Exporting the
+/// service functions
+/// for handling
+/// actions for user
+/// keys.
+pub mod keys;
+
 /// Exporting the 
 /// service functions
 /// for performing

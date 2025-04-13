@@ -68,10 +68,26 @@ pub async fn create_user_key(
         Err(e) => return Err::<UserKey, CleoErr>(CleoErr::new(&e.to_string()))
     };
     if user.is_admin{
-        let user_key: String = match generate_key(&16){
-            Ok(user_key) => user_key,
-            Err(e) => return Err::<UserKey, CleoErr>(CleoErr::new(&e.to_string()))
-        };
+        let user_key: String;
+        if key_type == &("admin".to_string()){
+            user_key = match generate_key(&16){
+                Ok(user_key) => user_key,
+                Err(e) => return Err::<UserKey, CleoErr>(CleoErr::new(&e.to_string()))
+            };        
+        }
+        else if key_type == &("normal".to_string()){
+            user_key = match generate_key(&10){
+                Ok(user_key) => user_key,
+                Err(e) => return Err::<UserKey, CleoErr>(CleoErr::new(&e.to_string()))
+            };        
+        }
+        else {
+            let e: String = format!(
+                "\"{}\" is not a valid user key type.",
+                &key_type
+            );
+            return Err::<UserKey, CleoErr>(CleoErr::new(&e.to_string()))
+        }
         let key_id: String = format!("{}{}", &user_key, TimeNow::new().to_string());
         let user_key_obj: UserKey = UserKey{
             key_id: key_id.clone(),

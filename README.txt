@@ -3,10 +3,7 @@
 
 # TODO
 - tests
-- html verif
 - documentation
-- type-checking queries
-- checking if all API routes are present.
 
 # SLOC
 ~ 2500

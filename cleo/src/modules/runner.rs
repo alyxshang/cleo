@@ -122,6 +122,7 @@ pub async fn run_app() -> Result<(), CleoErr> {
                 )
                 .app_data(data.clone())
                 .service(create_user_service)
+                .service(update_email_service)
                 .service(update_username_service)
                 .service(update_name_service)
                 .service(update_pfp_service)
@@ -150,6 +151,8 @@ pub async fn run_app() -> Result<(), CleoErr> {
                 .service(edit_smtp_username_service)
                 .service(edit_smtp_password_service)
                 .service(verify_email_service)
+                .service(create_user_file_service)
+                .service(static_file_service)
             }
         ).bind(admin_info.app_addr){
             Ok(server) => server,

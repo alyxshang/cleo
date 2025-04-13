@@ -57,6 +57,11 @@ use crate::modules::db::users::update_pfp;
 /// to create a new user.
 use crate::modules::db::users::create_user;
 
+/// Importing the function
+/// to update a user's
+/// email.
+use crate::modules::db::users::update_email;
+
 /// Importing the data structure
 /// for returning info on whether
 /// a write operation was successful
@@ -94,6 +99,11 @@ use crate::modules::db::email::create_email_token;
 /// submitting payloads for creating 
 /// new users.
 use crate::modules::payloads::UserCreationPayload;
+
+/// Importing the "get_user_from_token" 
+/// function to retrieve an entry for a Cleo
+/// user given their API token.
+use crate::modules::db::users::get_user_from_token;
 
 /// Importing the function to delete
 /// a user from the database.
@@ -186,9 +196,61 @@ pub async fn create_user_service(
     else {
         return Err::<HttpResponse, CleoErr>(CleoErr::new(&"Account creation failure.".to_string()))
     }
-    
 }
 
+/// This function is the API service
+/// function for updating the email of a user.
+/// If the received request and resulting
+/// operation are both valid, an instance of
+/// the "StatusResponse" structure with a boolean
+/// flag as a JSON response is returned.
+/// In any other case an error 
+/// is returned.
+#[post("/user/update/email")]
+pub async fn update_email_service(
+    payload: Json<UserChangePayload>,
+    data: Data<AppData>
+) -> Result<HttpResponse, CleoErr> {
+    let user: CleoUser = match get_user_from_token(&payload.api_token, &data.pool).await {
+        Ok(user) => user,
+        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+    };
+    let email_token: EmailToken = match create_email_token(&user.user_id, &data.pool).await{
+        Ok(email_token) => email_token,
+        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+    };
+    let instance_info: InstanceInformation = match get_instance_info(&data.pool).await {
+        Ok(instance_info) => instance_info,
+        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+    };
+    let body: String = format!(
+        "Please copy and paste this link into your browser: {}/email/{}",
+        instance_info.hostname,
+        &email_token.email_token
+    );
+    let send_mail: bool = match send_email(
+        &instance_info.smtp_username, 
+        &instance_info.smtp_pass, 
+        &format!("Account verification for {}", &instance_info.instance_name), 
+        &body, 
+        &payload.new_value, 
+        &instance_info.smtp_server
+    ).await {
+        Ok(send_mail) => send_mail,
+        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+    };
+    if send_mail{
+        let update_op: bool = match update_email(&payload.api_token, &payload.new_value, &data.pool).await {
+            Ok(_op) => true,
+            Err(_e) => false
+        };
+        Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: update_op }))
+    }
+    else {
+        return Err::<HttpResponse, CleoErr>(CleoErr::new(&"Account creation failure.".to_string()))
+    }
+    
+}
 /// This function is the API service
 /// function for editing a user's
 /// username. If the received request 

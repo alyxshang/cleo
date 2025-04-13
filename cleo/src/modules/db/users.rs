@@ -245,6 +245,34 @@ pub async fn update_username(
 }
 
 /// This function attempts to
+/// update the email of a user.
+/// If this operation is successful,
+/// an empty function is returned.
+/// If this operation fails, an error
+/// is returned.
+pub async fn update_email(
+    api_token: &String,
+    new_email: &String,
+    pool: &Pool<Postgres>
+) -> Result<(), CleoErr>{
+    let user: CleoUser = match get_user_from_token(api_token, pool).await {
+        Ok(user) => user,
+        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
+    };
+    let update_op: () = match query!(
+        "UPDATE cleo_users SET email_addr = $1 WHERE user_id = $2",
+        new_email, 
+        user.user_id
+    )
+        .execute(pool)
+        .await 
+    {
+        Ok(_feedback) => {},
+        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
+    };
+    Ok(update_op)
+}
+/// This function attempts to
 /// update the name of a user.
 /// If this operation is successful,
 /// an empty function is returned.
@@ -293,35 +321,6 @@ pub async fn update_verified(
         .await 
     {
         Ok(_feedback) => {},
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    Ok(update_op)
-}
-
-/// This function attempts to
-/// update the email of a user.
-/// If this operation is successful,
-/// an empty function is returned.
-/// If this operation fails, an error
-/// is returned.
-pub async fn update_email(
-    api_token: &String,
-    new_email: &String,
-    pool: &Pool<Postgres>
-) -> Result<(), CleoErr>{
-    let user: CleoUser = match get_user_from_token(api_token, pool).await {
-        Ok(user) => user,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let update_op: () = match query!(
-        "UPDATE cleo_users SET email_addr = $1 WHERE user_id = $2", 
-        new_email,
-        user.user_id
-    )
-        .execute(pool)
-        .await 
-    {
-        Ok(_feedbck) => {},
         Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
     };
     Ok(update_op)

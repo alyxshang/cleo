@@ -26,6 +26,11 @@
 /posts/all
 /files/all
 
+# KEYS
+/keys/create
+/keys/delete
+/keys/all
+
 # POSTS
 /posts/create
 /posts/update

@@ -20,9 +20,21 @@ pub mod keys;
 
 /// Exporting the 
 /// service functions
-/// for performing
-/// actions for posts.
+/// for reading and
+/// writing information
+/// about posts to
+/// and from the
+/// website.
 pub mod posts;
+
+/// Exporting the
+/// functions for
+/// reading and writing
+/// information about
+/// email verification
+/// tokens to and from
+/// the database.
+pub mod email;
 
 /// Exporting the module
 /// that handles reading

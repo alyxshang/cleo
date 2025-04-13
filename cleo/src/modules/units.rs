@@ -10,6 +10,11 @@ Licensed under the FSL v1.
 /// database connections.
 use sqlx::Pool;
 
+/// Importing the 
+/// "Deserialize" trait
+/// to derive it.
+use serde::Deserialize;
+
 /// Importing the "Postgres"
 /// structure from the "sqlx"
 /// crate.
@@ -35,4 +40,12 @@ impl AppData{
         AppData { pool: pg_pool.to_owned() }
     }
 
+}
+
+/// Declaring a structure
+/// to extract the "token"
+/// parameter from an URL.
+#[derive(Deserialize)]
+pub struct TokenExtractor{
+    pub token: String
 }

@@ -108,5 +108,17 @@ pub struct UserKey {
     pub user_id: String,
     pub user_key: String,
     pub key_type: String,
-    pub key_used: bool
+    pub key_used: bool,
+    pub username: String
+}
+
+/// A structure
+/// for creating tables
+/// for holding info
+/// on email tokens.
+#[derive(FromRow)]
+pub struct EmailToken{
+  pub etoken_id: String,
+  pub email_token: String,
+  pub user_id: String
 }

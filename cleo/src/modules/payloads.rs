@@ -31,16 +31,6 @@ pub enum ContentType{
     Post
 }
 
-/// An enum to describe
-/// all possible types of
-/// user keys that can be
-/// submitted.
-#[derive(Deserialize, PartialEq)]
-pub enum UserKeyType{
-    Admin,
-    User
-}
-
 /// A structure for a 
 /// payload to
 /// create a new user.
@@ -162,6 +152,7 @@ pub struct DeleteUserFilePayload{
 pub struct UserKeyPayload{
     pub key_type: String,
     pub api_token: String,
+    pub username: String
 }
 
 /// A structure for submitting a

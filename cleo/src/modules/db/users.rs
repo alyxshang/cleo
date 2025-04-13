@@ -52,6 +52,11 @@ use crate::modules::err::CleoErr;
 /// time.
 use crate::modules::utils::TimeNow;
 
+/// Importing the structure that
+/// models user keys in the 
+/// database.
+use crate::modules::models::UserKey;
+
 /// Importing the "CleoUser" structure
 /// for explicit typing.
 use crate::modules::models::CleoUser;
@@ -75,6 +80,10 @@ use crate::modules::db::tokens::get_token;
 /// a user key exists. This is relevant for
 /// signing users up.
 use crate::modules::db::keys::user_key_exists;
+
+/// Importing the function to retrieve a user
+/// key from the database given the key.
+use crate::modules::db::keys::get_user_key_by_id;
 
 /// This function attempts
 /// to create a user in the database.
@@ -104,14 +113,16 @@ pub async fn create_user(
     let user_id: String = hash_string(&hashed_source);
     let key_length: usize = user_key.chars().collect::<Vec<char>>().len();
     let is_admin: bool;
-    let key_valid: bool = match user_key_exists(user_key, pool).await {
-        Ok(key_valid) => key_valid,
+    let key_valid: bool = user_key_exists(user_key, pool).await;
+    let user_exists: bool = user_exists_by_username(username, pool).await;
+    let user_key_obj: UserKey = match get_user_key_by_id(user_key, pool).await {
+        Ok(user_key) => user_key,
         Err(e) => return Err::<CleoUser, CleoErr>(CleoErr::new(&e.to_string()))
     };
-    if key_valid && key_length == 16 {
-        is_admin = true;
+    if key_valid && key_length == 16 && username == &user_key_obj.username && user_exists == false {
+        is_admin = true;    
     }
-    else if key_valid && key_length == 10 {
+    else if key_valid && key_length == 10 && username == &user_key_obj.username && user_exists == false {
         is_admin = false;
     }
     else {
@@ -468,15 +479,17 @@ pub async fn get_user_from_token(
 }
 
 /// This function attempts
-/// to check wheter a user exists
-/// in the database. Depending on this,
-/// a boolean is returned. If this operation
+/// to check wheter a user exists given
+/// the user's ID in the database. 
+/// Depending on this, a boolean is 
+/// returned. If this operation
 /// fails, an error is returned.
-pub async fn user_exists(
+pub async fn user_exists_by_user_id(
     user_id: &String,
     pool: &Pool<Postgres>,
-) -> Result<bool, CleoErr> {
-    let fetched_user: CleoUser = match query_as!(
+) -> bool {
+    let result: bool;
+    let fetched_user: bool = match query_as!(
         CleoUser,
         "SELECT * FROM cleo_users WHERE user_id = $1",
         user_id
@@ -484,13 +497,33 @@ pub async fn user_exists(
         .fetch_one(pool)
         .await 
     {
-        Ok(fetched_user) => fetched_user,
-        Err(e) => return Err::<bool, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(fetched_user) => true,
+        Err(e) => false
     };
-    let mut result: bool = false;
-    if &fetched_user.user_id == user_id {
-        result = true;
-    }
-    else {}
+    Ok(result)
+}
+
+/// This function attempts
+/// to check wheter a user exists given
+/// the user's handle in the database. 
+/// Depending on this, a boolean is 
+/// returned. If this operation
+/// fails, an error is returned.
+pub async fn user_exists_by_username(
+    username: &String,
+    pool: &Pool<Postgres>,
+) -> bool {
+    let result: bool;
+    let fetched_user: bool = match query_as!(
+        CleoUser,
+        "SELECT * FROM cleo_users WHERE username = $1",
+        username
+    )   
+        .fetch_one(pool)
+        .await 
+    {
+        Ok(fetched_user) => true,
+        Err(e) => false
+    };
     Ok(result)
 }

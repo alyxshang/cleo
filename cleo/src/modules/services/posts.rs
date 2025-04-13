@@ -125,24 +125,22 @@ pub async fn create_user_post_service(
 /// If the received request and resulting
 /// operation are both valid, an instance of
 /// the "StatusResponse" with a boolean flag
-/// is returned as a JSON response. In any other
-/// case an error is returned.
+/// is returned as a JSON response. 
 #[post("/posts/update")]
 pub async fn update_user_post_service(
     payload: Json<UpdatePostPayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match update_post_text(
+) -> HttpResponse {
+    let update_op: bool = match update_post_text(
         &payload.api_token, 
         &payload.content_id,
         &payload.text, 
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -150,20 +148,19 @@ pub async fn update_user_post_service(
 /// If the received request and resulting
 /// operation are both valid, an instance of
 /// the "StatusResponse" with a boolean flag
-/// is returned as a JSON response. In any other
-/// case an error is returned.#[post("/posts/delete")]
+/// is returned as a JSON response.
+#[post("/posts/delete")]
 pub async fn delete_user_post_service(
     payload: Json<DeletePostPayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match delete_post(
+) -> HttpResponse {
+    let del_op: bool = match delete_post(
         &payload.api_token, 
         &payload.content_id,
         &data.pool
     ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: del_op })
 }

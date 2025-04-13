@@ -59,5 +59,13 @@ CREATE TABLE user_keys(
     user_key TEXT NOT NULL,
     key_type TEXT NOT NULL,
     key_used BOOLEAN NOT NULL,
+    username TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES cleo_users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE email_token(
+  etoken_id TEXT NOT NULL,
+  email_token TEXT NOT NULL,
+  user_id TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES cleo_users(user_id) ON DELETE CASCADE
 );

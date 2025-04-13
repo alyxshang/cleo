@@ -169,23 +169,21 @@ pub async fn get_instance_users_service(
 /// the received request and resulting
 /// operation are both valid, an instance
 /// of the "StatusResponse" as a JSON
-/// response is returned. In any other
-/// case an error is returned.
+/// response is returned. 
 #[post("/instance/edit/name")]
 pub async fn edit_instance_name_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match edit_instance_name(
+) -> HttpResponse {
+    let update_op: bool = match edit_instance_name(
         &payload.api_token, 
         &payload.new_value,
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -194,23 +192,21 @@ pub async fn edit_instance_name_service(
 /// the received request and resulting
 /// operation are both valid, an instance
 /// of the "StatusResponse" as a JSON
-/// response is returned. In any other
-/// case an error is returned.
+/// response is returned. 
 #[post("/instance/edit/hostname")]
 pub async fn edit_instance_hostname_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match edit_instance_hostname(
+) -> HttpResponse {
+    let update_op: bool = match edit_instance_hostname(
         &payload.api_token, 
         &payload.new_value,
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -220,23 +216,21 @@ pub async fn edit_instance_hostname_service(
 /// the received request and resulting
 /// operation are both valid, an instance
 /// of the "StatusResponse" as a JSON
-/// response is returned. In any other
-/// case an error is returned.
+/// response is returned.
 #[post("/instance/edit/smtp/server")]
 pub async fn edit_smtp_server_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match edit_instance_smtp_server(
+) -> HttpResponse { 
+    let update_op: bool = match edit_instance_smtp_server(
         &payload.api_token, 
         &payload.new_value,
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -246,23 +240,21 @@ pub async fn edit_smtp_server_service(
 /// the received request and resulting
 /// operation are both valid, an instance
 /// of the "StatusResponse" as a JSON
-/// response is returned. In any other
-/// case an error is returned.
+/// response is returned.
 #[post("/instance/edit/smtp/username")]
 pub async fn edit_smtp_username_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match edit_smtp_username(
+) -> HttpResponse {
+    let update_op: bool = match edit_smtp_username(
         &payload.api_token, 
         &payload.new_value,
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -272,21 +264,19 @@ pub async fn edit_smtp_username_service(
 /// the received request and resulting
 /// operation are both valid, an instance
 /// of the "StatusResponse" as a JSON
-/// response is returned. In any other
-/// case an error is returned.
+/// response is returned. 
 #[post("/instance/edit/smtp/pass")]
 pub async fn edit_smtp_password_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match edit_smtp_pass(
+) -> HttpResponse { 
+    let update_op: bool = match edit_smtp_pass(
         &payload.api_token, 
         &payload.new_value,
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }

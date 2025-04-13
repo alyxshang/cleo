@@ -59,6 +59,7 @@ use crate::modules::db::users::get_user_from_token;
 /// structure is returned. if this operation
 /// fails, an error is returned.
 pub async fn create_user_key(
+    username: &String,
     key_type: &String,
     api_token: &String,
     pool: &Pool<Postgres>,
@@ -94,15 +95,17 @@ pub async fn create_user_key(
             user_id: user.user_id,
             user_key: user_key,
             key_type: key_type.to_owned(),
-            key_used: false
+            key_used: false,
+            username: username.to_string()
         };
         let _insert_op = match query!(
-            "INSERT INTO user_keys (key_id, user_id, user_key, key_type, key_used) VALUES ($1, $2, $3, $4, $5)",
+            "INSERT INTO user_keys (key_id, user_id, user_key, key_type, key_used, username) VALUES ($1, $2, $3, $4, $5, $6)",
             user_key_obj.key_id,
             user_key_obj.user_id,
             user_key_obj.user_key,
             user_key_obj.key_type,
-            user_key_obj.key_used
+            user_key_obj.key_used,
+            user_key_obj.username
         )
             .execute(pool)
             .await
@@ -186,32 +189,21 @@ pub async fn delete_user_key(
 /// is successful, an empty function is returned.
 /// If this operation fails, an error is returned.
 pub async fn change_user_key_status(
-    api_token: &String,
     key_id: &String,
     pool: &Pool<Postgres>,
-) -> Result<(), CleoErr> {
-    let user: CleoUser = match get_user_from_token(api_token, pool).await {
-        Ok(user) => user,
+) -> Result<(), CleoErr> { 
+    let update_op: () = match query!(
+        "UPDATE user_keys SET key_used = $1 WHERE key_id = $2", 
+        true,
+        key_id
+    )
+        .execute(pool)
+        .await 
+    {
+        Ok(_feedback) => {},
         Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
     };
-    if user.is_admin {
-        let update_op: () = match query!(
-            "UPDATE user_keys SET key_used = $1 WHERE key_id = $2", 
-            true,
-            key_id
-        )
-            .execute(pool)
-            .await 
-        {
-            Ok(_feedback) => {},
-            Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-        };
-        Ok(update_op)
-    }
-    else {
-        let e: String = format!("User is not an administrator.");
-        Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    }
+    Ok(update_op)
 }
 
 /// This function attempts to retrieve
@@ -247,6 +239,7 @@ pub async fn get_user_keys(
         Err::<Vec<UserKey>, CleoErr>(CleoErr::new(&e.to_string()))
     }
 }
+
 /// This function attempts
 /// to check whether a user
 /// key exists or not. Depending
@@ -256,8 +249,8 @@ pub async fn get_user_keys(
 pub async fn user_key_exists(
     user_key: &String,
     pool: &Pool<Postgres>,
-) -> Result<bool, CleoErr> {
-    let fetched_key: UserKey = match query_as!(
+) -> bool {
+    let exists: bool = match query_as!(
         UserKey,
         "SELECT * FROM user_keys WHERE user_key = $1",
         user_key
@@ -265,13 +258,8 @@ pub async fn user_key_exists(
         .fetch_one(pool)
         .await 
     {
-        Ok(fetched_key) => fetched_key,
-        Err(e) => return Err::<bool, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_fetched_key) => true,
+        Err(e) => false
     };
-    let mut result: bool = false;
-    if &fetched_key.user_key == user_key {
-        result = true;
-    }
-    else {}
-    Ok(result)
+    exists
 }

@@ -25,6 +25,23 @@ pub struct UserCreationResponse{
 
 /// A data structure
 /// to return info
+/// in JSON format
+/// on a created user
+/// for user cration
+/// only.
+#[derive(Serialize)]
+pub struct UserCreationResponseOnly{
+    pub user_id: String,
+    pub display_name: String,
+    pub is_verified: bool,
+    pub username: String,
+    pub email_addr: String,
+    pub pfp_url: String,
+    pub is_admin: bool,
+    pub key_status_updated: bool
+}
+/// A data structure
+/// to return info
 /// on whether a 
 /// write operation was
 /// successful or not.
@@ -143,4 +160,13 @@ pub struct UserFiles{
 pub struct InstanceResponse{
     pub name: String,
     pub hostname: String
+}
+
+/// A data structure to
+/// return a vector of
+/// created user keys
+/// as a JSON response.
+#[derive(Serialize)]
+pub struct UserKeysResponse{
+    pub keys: Vec<UserKeyCreationResponse>
 }

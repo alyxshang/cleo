@@ -119,25 +119,23 @@ pub async fn create_extra_content_field_service(
 /// If the received request and resulting
 /// operation are both valid, an instance of
 /// the "StatusResponse" with a boolean flag
-/// is returned as a JSON response. In any other
-/// case an error is returned.
+/// is returned as a JSON response. 
 #[post("/ecf/edit/key")]
 pub async fn edit_extra_content_field_key_service(
     payload: Json<EditExtraContentFieldPayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match edit_extra_field_key_for_post(
+) -> HttpResponse {
+    let update_op: bool = match edit_extra_field_key_for_post(
         &payload.api_token, 
         &payload.content_id,
         &payload.field_id,
         &payload.new_value,
         &data.pool
     ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -146,25 +144,23 @@ pub async fn edit_extra_content_field_key_service(
 /// If the received request and resulting
 /// operation are both valid, an instance of
 /// the "StatusResponse" with a boolean flag
-/// is returned as a JSON response. In any other
-/// case an error is returned.
+/// is returned as a JSON response.
 #[post("/ecf/edit/value")]
 pub async fn edit_extra_content_field_value_service(
     payload: Json<EditExtraContentFieldPayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match edit_extra_field_value_for_post(
+) -> HttpResponse {
+    let del_op: bool = match edit_extra_field_value_for_post(
         &payload.api_token, 
         &payload.content_id,
         &payload.field_id,
         &payload.new_value,
         &data.pool
     ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: del_op })
 }
 
 /// This function is the API service
@@ -173,22 +169,20 @@ pub async fn edit_extra_content_field_value_service(
 /// If the received request and resulting
 /// operation are both valid, an instance of
 /// the "StatusResponse" with a boolean flag
-/// is returned as a JSON response. In any other
-/// case an error is returned.
+/// is returned as a JSON response.
 #[post("/ecf/delete")]
 pub async fn delete_extra_content_field_service(
     payload: Json<DeleteExtraContentFieldPayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match delete_extra_field_for_post(
+) -> HttpResponse {
+    let del_op: bool = match delete_extra_field_for_post(
         &payload.api_token, 
         &payload.content_id,
         &data.pool,
         &payload.field_id
     ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: del_op })
 }

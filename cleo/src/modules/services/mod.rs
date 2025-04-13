@@ -26,6 +26,13 @@ pub mod posts;
 /// Exporting the
 /// service functions
 /// for performing
+/// actions on email
+/// tokens.
+pub mod email;
+
+/// Exporting the
+/// service functions
+/// for performing
 /// actions for users..
 pub mod users;
 

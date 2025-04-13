@@ -95,21 +95,19 @@ pub async fn create_user_file_service(
 /// request and resulting operation are both 
 /// valid, an instance of the "StatusResponse" 
 /// with a boolean flag is returned as a JSON 
-/// response. In any other case an error is 
-/// returned.
+/// response. 
 #[post("/files/delete")]
 pub async fn delete_user_file_service(
     payload: Json<DeleteUserFilePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match delete_user_file(
+) -> HttpResponse {
+    let del_op: bool = match delete_user_file(
         &payload.api_token, 
         &payload.file_id,
         &data.pool
     ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: del_op })
 }

@@ -43,6 +43,11 @@ use crate::modules::models::CleoUser;
 /// emails.
 use crate::modules::utils::send_email;
 
+/// Importing the model for
+/// email tokens for explicit
+/// typing.
+use crate::modules::models::EmailToken;
+
 /// Importing the function
 /// to update a user's
 /// profile picture.
@@ -85,6 +90,10 @@ use crate::modules::payloads::UserChangePayload;
 /// for making auth-related requests.
 use crate::modules::payloads::AuthActionPayload;
 
+/// Importing the function to create a new email
+/// token object in the database.
+use crate::modules::db::email::create_email_token;
+
 /// Importing the data structure for
 /// submitting payloads for creating 
 /// new users.
@@ -103,10 +112,15 @@ use crate::modules::db::general::get_instance_info;
 /// the name of a Cleo user.
 use crate::modules::db::users::update_display_name;
 
+/// /// Importing the function to change the status
+/// of a created user key to being used and
+/// verified.
+use crate::modules::db::keys::change_user_key_status;
+
 /// Importing the data structure for
 /// returning information on created
 /// users.
-use crate::modules::responses::UserCreationResponse;
+use crate::modules::responses::UserCreationResponseOnly;
 
 /// This function is the API service
 /// function for creating a user.
@@ -132,11 +146,19 @@ pub async fn create_user_service(
         Ok(user) => user,
         Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
     };
+    let email_token: EmailToken = match create_email_token(&user.user_id, &data.pool).await{
+        Ok(email_token) => email_token,
+        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+    };
     let instance_info: InstanceInformation = match get_instance_info(&data.pool).await {
         Ok(instance_info) => instance_info,
         Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
     };
-    let body: String = "".to_string();
+    let body: String = format!(
+        "Please copy and paste this link into your browser: {}/email/{}",
+        instance_info.hostname,
+        &email_token.email_token
+    );
     let send_mail: bool = match send_email(
         &instance_info.smtp_username, 
         &instance_info.smtp_pass, 
@@ -149,14 +171,19 @@ pub async fn create_user_service(
         Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
     };
     if send_mail{
-        let user_obj: UserCreationResponse = UserCreationResponse{
+        let key_updated: bool = match change_user_key_status(&payload.user_key, &data.pool).await {
+            Ok(_update_op) => true,
+            Err(_e) => false
+        };
+        let user_obj: UserCreationResponseOnly = UserCreationResponseOnly{
             user_id: user.user_id,
             display_name: user.display_name,
             is_verified: user.is_verified,
             username: user.username,
             email_addr: user.email_addr,
             pfp_url: user.pfp_url,
-            is_admin: user.is_admin
+            is_admin: user.is_admin,
+            key_status_updated: key_updated
         };
         Ok(HttpResponse::Ok().json(user_obj))
     }
@@ -172,22 +199,20 @@ pub async fn create_user_service(
 /// and resulting operation are both valid, an 
 /// instance of the "StatusResponse" with a 
 /// boolean flag is returned as a JSON response. 
-/// In any other case an error is returned.
 #[post("/user/update/username")]
 pub async fn update_username_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match update_username(
+) -> HttpResponse { 
+    let update_op: bool = match update_username(
         &payload.api_token, 
         &payload.new_value, 
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -196,22 +221,20 @@ pub async fn update_username_service(
 /// and resulting operation are both valid, an 
 /// instance of the "StatusResponse" with a 
 /// boolean flag is returned as a JSON response. 
-/// In any other case an error is returned.
 #[post("/user/update/name")]
 pub async fn update_name_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match update_display_name(
+) -> HttpResponse {
+    let update_op: bool = match update_display_name(
         &payload.api_token, 
         &payload.new_value, 
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false    
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -220,22 +243,20 @@ pub async fn update_name_service(
 /// and resulting operation are both valid, an 
 /// instance of the "StatusResponse" with a 
 /// boolean flag is returned as a JSON response. 
-/// In any other case an error is returned.
 #[post("/user/update/email")]
 pub async fn update_email_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match update_email(
+) -> HttpResponse {
+    let update_op: bool = match update_email(
         &payload.api_token, 
         &payload.new_value, 
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -244,22 +265,20 @@ pub async fn update_email_service(
 /// and resulting operation are both valid, an 
 /// instance of the "StatusResponse" with a 
 /// boolean flag is returned as a JSON response. 
-/// In any other case an error is returned.
 #[post("/user/update/picture")]
 pub async fn update_pfp_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match update_pfp(
+) -> HttpResponse {
+    let update_op: bool = match update_pfp(
         &payload.api_token, 
         &payload.new_value, 
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -268,22 +287,20 @@ pub async fn update_pfp_service(
 /// resulting operation are both valid, an 
 /// instance of the "StatusResponse" with a 
 /// boolean flag is returned as a JSON response. 
-/// In any other case an error is returned.
 #[post("/user/update/password")]
 pub async fn update_password_service(
     payload: Json<UserChangePayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _update_op: () = match update_password(
+) -> HttpResponse { 
+    let update_op: bool = match update_password(
         &payload.api_token, 
         &payload.new_value, 
         &data.pool
     ).await {
-        Ok(_update_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }
 
 /// This function is the API service
@@ -291,21 +308,19 @@ pub async fn update_password_service(
 /// If the received request and resulting
 /// operation are both valid, an instance of
 /// the "StatusResponse" with a boolean flag
-/// is returned as a JSON response. In any other
-/// case an error is returned.
+/// is returned as a JSON response.
 #[post("/user/delete")]
 pub async fn delete_user_service(
     payload: Json<AuthActionPayload>,
     data: Data<AppData>
-) -> Result<HttpResponse, CleoErr> {
-    let mut result: bool = false;
-    let _del_op: () = match delete_user_from_db(
+) -> HttpResponse { 
+    let del_op: bool = match delete_user_from_db(
         &payload.username, 
         &payload.password, 
         &data.pool
     ).await {
-        Ok(_del_op) => {result = true},
-        Err(e) => return Err::<HttpResponse, CleoErr>(CleoErr::new(&e.to_string()))
+        Ok(_op) => true,
+        Err(_e) => false
     };
-    Ok(HttpResponse::Ok().json(StatusResponse{ is_ok: result }))
+    HttpResponse::Ok().json(StatusResponse{ is_ok: del_op })
 }

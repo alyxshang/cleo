@@ -48,6 +48,14 @@ pub mod models;
 /// app.
 pub mod runner;
 
+/// Exporting the module
+/// for gathering all
+/// the neccessary 
+/// variables from
+/// the current 
+/// environment.
+pub mod config;
+
 /// Exporting the
 /// module containing
 /// data structures

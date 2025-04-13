@@ -3,20 +3,6 @@ Mocha Backend by Alyx Shang.
 Licensed under the FSL v1.
 */
 
-/// Importing the
-/// "Pool" structure
-/// from the "sqlx" crate
-/// to make a pool for
-/// database connections.
-use sqlx::Pool;
-
-/// Importing the 
-/// function retrieve
-/// environment
-/// variables for initial
-/// settings.
-use std::env::var;
-
 /// Importing the "App"
 /// structure to create a new
 /// Actix Web app.
@@ -46,124 +32,82 @@ use actix_web::HttpServer;
 /// persistent app data.
 use super::units::AppData;
 
-/// Importing the model for
-/// users for explicit typing.
-use super::models::CleoUser;
+/// Importing the "Config"
+/// structure for explicit
+/// typing.
+use super::units::Config;
 
-/// Importing the "Postgres"
-/// structure from the "sqlx"
-/// crate.
-use sqlx::postgres::Postgres;
+/// Importing the "AadminInfo"
+/// structure for explicit
+/// typing.
+use super::units::AdminInfo;
 
-/// Importing all
-/// API service functions.
-use crate::modules::services::*;
+/// Importing all service
+/// functions to create
+/// extra content fields.
+use crate::modules::services::ecf::*;
 
-/// Importing the "create_connection"
-/// function to create a connection
-/// to the PostgreSQL database.
-use super::utils::create_connection;
+// Importing all service functions
+// to create user keys.
+use crate::modules::services::keys::*;
+
+/// Importing all service functions 
+/// to work with user-uploadable files.
+use crate::modules::services::files::*;
+
+/// Importing all service functions 
+/// for people to verify their email 
+/// addresses.
+use crate::modules::services::email::*;
+
+/// Importing all service functions
+/// for creating and deleing users 
+/// and updating their information.
+use crate::modules::services::users::*;
+
+/// Importing all service functions 
+/// with routes relevant for admins.
+use crate::modules::services::admin::*;
+
+/// Importing all service functions for
+/// creating, updating, and deleting
+/// user posts.
+use crate::modules::services::posts::*;
+
+/// Importing all service functions for
+/// creating and deleting API tokens.
+use crate::modules::services::tokens::*;
+
+/// Importing all service functions for
+/// retrieving info on different things.
+use crate::modules::services::general::*;
 
 /// Importing the "DefaultHeaders" structure
 /// to set custom headers.
 use actix_web::middleware::DefaultHeaders;
 
+/// Importing the function to read the
+/// neccessary data from the enviroment.
+use crate::modules::config::create_config;
+
+/// Importing the function to create the
+/// neccessary entities for the app.
+use crate::modules::config::create_admin_info;
+
 /// Attempts to run the app with some environment
 /// variables set. If this operations fails,
 /// an error is returned.
 pub async fn run_app() -> Result<(), CleoErr> {
-    let local_host: String = match var("CLEO_HOST"){
-        Ok(local_host) => local_host,
+    let config: Config = match create_config(){
+        Ok(config) => config,
         Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
     };
-    let local_port: String = match var("CLEO_PORT"){
-        Ok(local_port) => local_port,
+    let admin_info: AdminInfo = match create_admin_info(&config).await{
+        Ok(config) => config,
         Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
     };
-    let hostname: String = match var("CLEO_HOSTNAME"){
-        Ok(hostname) => hostname,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let instance_name: String = match var("CLEO_INSTANCE_NAME"){
-        Ok(instance_name) => instance_name,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let smtp_server: String = match var("CLEO_SMTP_SERVER"){
-        Ok(smtp_server) => smtp_server,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let smtp_username: String = match var("CLEO_SMTP_USERNAME"){
-        Ok(smtp_username) => smtp_username,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let smtp_pass: String = match var("CLEO_SMTP_PASS"){
-        Ok(smtp_pass) => smtp_pass,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let admin_username: String = match var("CLEO_ADMIN_USERNAME"){
-        Ok(admin_username) => admin_username,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let admin_email: String = match var("CLEO_ADMIN_EMAIL"){
-        Ok(admin_email) => admin_email,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let admin_password: String = match var("CLEO_ADMIN_PASSWORD"){
-        Ok(admin_password) => admin_password,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let admin_display_name: String = match var("CLEO_ADMIN_PASSWORD"){
-        Ok(admin_display_name) => admin_display_name,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let postgres_user: String = match var("CLEO_POSTGRES_USER"){
-        Ok(postgres_user) => postgres_user,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let postgres_host: String = match var("CLEO_POSTGRES_HOST"){
-        Ok(postgres_host) => postgres_host,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let postgres_pass: String = match var("CLEO_POSTGRES_PASS"){
-        Ok(postgres_pass) => postgres_pass,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let db_url: String = format!(
-        "postgres://{}:{}@{}/cleo", 
-        postgres_user, 
-        postgres_pass, 
-        postgres_host
-    );
-    let app_addr: String = format!("{}:{}", local_host, local_port);
-    let connection: Pool<Postgres> = match create_connection(&db_url).await{
-        Ok(connection) => connection,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let admin_user: CleoUser = match create_user(
-        &admin_username,
-        &admin_display_name,
-        &admin_password,
-        &admin_email,
-        &"".to_string(),
-        &"".to_string(),
-        &connection
-    ).await {
-        Ok(admin_user) => admin_user,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    let instance: usize = match create_instance_info(
-        &connection, 
-        &smtp_server, 
-        &hostname, 
-        &instance_name, 
-        &smtp_username, 
-        &smtp_pass
-    ).await {
-        Ok(instance) => instance,
-        Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    if admin_user.username == admin_username && instance == 0 {
-        let data: Data<AppData> = Data::new(AppData::new(&connection));
+    if admin_info.admin.username == config.admin_username && admin_info.instance == 0 {
+        let data: Data<AppData> = Data::new(AppData::new(&admin_info.pool));
         let server = match HttpServer::new(
         move || {
             let cors = Cors::permissive()
@@ -201,14 +145,14 @@ pub async fn run_app() -> Result<(), CleoErr> {
                 .service(get_user_keys_service)
                 .service(get_user_files_service)
                 .service(get_user_posts_service)
-                .service(get_instance_info_service)
                 .service(edit_instance_name_service)
                 .service(edit_instance_hostname_service)
                 .service(edit_smtp_server_service)
                 .service(edit_smtp_username_service)
                 .service(edit_smtp_password_service)
+                .service(verify_email_service)
             }
-        ).bind(app_addr){
+        ).bind(admin_info.app_addr){
             Ok(server) => server,
             Err(e) => return Err::<(), CleoErr>(CleoErr::new(&e.to_string()))
         };

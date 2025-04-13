@@ -62,7 +62,7 @@ pub async fn create_email_token(
     let token_id: String = hash_string(&TimeNow::new().to_string());
     let token: EmailToken = EmailToken{
         etoken_id: token_id,
-        email_token: email_token,
+        email_token: email_token.clone(),
         user_id: user_id.to_string()
     };
     let _insert_op = match query!(

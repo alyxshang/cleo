@@ -8,7 +8,7 @@ CREATE TABLE instance_info(
     smtp_server TEXT NOT NULL,
     smtp_username TEXT NOT NULL,
     smtp_pass TEXT NOT NULL,
-    file_dir TEXT NOT NULL,
+    file_dir TEXT NOT NULL
 );
 
 CREATE TABLE cleo_users(
@@ -17,7 +17,6 @@ CREATE TABLE cleo_users(
     is_verified BOOLEAN NOT NULL,
     username TEXT NOT NULL,
     pwd TEXT NOT NULL,
-    email_verif_code TEXT,
     email_addr TEXT NOT NULL,
     pfp_url TEXT NOT NULL,
     is_admin BOOLEAN NOT NULL
@@ -48,7 +47,7 @@ CREATE TABLE extra_content_fields(
 );
 
 CREATE TABLE user_api_tokens(
-     token_id TEXT NOT NULL PRIMARY KEY,
+    token_id TEXT NOT NULL PRIMARY KEY,
     user_id TEXT NOT NULL,
     token TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES cleo_users(user_id) ON DELETE CASCADE
@@ -64,8 +63,8 @@ CREATE TABLE user_keys(
     FOREIGN KEY (user_id) REFERENCES cleo_users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE email_token(
-  etoken_id TEXT NOT NULL,
+CREATE TABLE email_tokens(
+  etoken_id TEXT NOT NULL PRIMARY KEY,
   email_token TEXT NOT NULL,
   user_id TEXT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES cleo_users(user_id) ON DELETE CASCADE

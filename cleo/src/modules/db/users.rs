@@ -134,14 +134,7 @@ pub async fn create_user(
         display_name: display_name.to_owned(),
         is_verified: false,
         username: username.clone(),
-        pwd: hashed_pwd, 
-        email_verif_code: hash_string(
-            &format!(
-                "{}{}", 
-                TimeNow::new().to_string(), 
-                &username
-            )
-        ),
+        pwd: hashed_pwd,  
         email_addr: email_addr.to_owned(),
         pfp_url: pfp_url.to_owned(), 
         is_admin: is_admin.to_owned()
@@ -234,7 +227,7 @@ pub async fn get_user_from_email_token(
     pool: &Pool<Postgres>
 ) -> Result<CleoUser, CleoErr> {
     let uat_obj: CleoUser = match query_as!(
-        UserAPIToken,
+        CleoUser,
         "SELECT * FROM cleo_users WHERE email_token_verif = $1", 
         token
     )

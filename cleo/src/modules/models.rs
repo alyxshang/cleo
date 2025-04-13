@@ -37,7 +37,6 @@ pub struct CleoUser{
     pub is_verified: bool,
     pub username: String,
     pub pwd: String,
-    pub email_verif_code: String,
     pub email_addr: String,
     pub pfp_url: String,
     pub is_admin: bool,

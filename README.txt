@@ -4,9 +4,7 @@
 # TODO
 - tests
 - html verif
-- file uploads
 - documentation
-- serving static files
 
 # SLOC
 ~ 2500

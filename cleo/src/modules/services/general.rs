@@ -142,6 +142,7 @@ pub async fn get_user_files_service(
     for file in files {
         let resp_file: UserFileResponse = UserFileResponse{
            user_id: file.user_id,
+           file_id: file.file_id,
            file_url: format!("{}{}", &info.hostname, &file.file_path),
            file_name: file.file_path
         };

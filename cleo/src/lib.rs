@@ -8,6 +8,12 @@ Licensed under the FSL v1.
 pub mod modules;
 
 /// Re-exporting the
+/// module for reading
+/// and writing to and
+/// from the database.
+pub use modules::db::*;
+
+/// Re-exporting the
 /// module containing
 /// this crate's
 /// error-handling
@@ -41,7 +47,7 @@ pub use modules::models::*;
 /// app.
 pub use modules::runner::*;
 
-/// Re-exporting the
+/// Exporting the
 /// module containing
 /// this crate's
 /// API service
@@ -63,3 +69,8 @@ pub use modules::payloads::*;
 /// data from different
 /// API services.
 pub use modules::responses::*;
+
+/// Re-exporting the module
+/// containing extractors
+/// for request paths.
+pub use modules::extractors::*;

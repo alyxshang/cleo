@@ -27,6 +27,7 @@ CREATE TABLE user_files(
     file_id TEXT NOT NULL PRIMARY KEY,
     user_id TEXT NOT NULL,
     file_path TEXT NOT NULL,
+    file_url TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES cleo_users(user_id) ON DELETE CASCADE
 );
 

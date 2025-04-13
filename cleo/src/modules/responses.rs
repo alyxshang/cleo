@@ -97,7 +97,8 @@ pub struct ExtraContentFieldResponse{
 pub struct UserFileResponse{
     pub user_id: String,
     pub file_url: String,
-    pub file_name: String
+    pub file_name: String,
+    pub file_id: String
 }
 
 /// A data structure

@@ -27,10 +27,6 @@ use actix_web::App;
 /// rules.
 use actix_cors::Cors;
 
-/// Importing all
-/// API service functions.
-use super::services::*;
-
 /// Importing the "Data"
 /// structure to register
 /// persistent app data.
@@ -58,6 +54,10 @@ use super::models::CleoUser;
 /// structure from the "sqlx"
 /// crate.
 use sqlx::postgres::Postgres;
+
+/// Importing all
+/// API service functions.
+use crate::modules::services::*;
 
 /// Importing the "create_connection"
 /// function to create a connection

@@ -54,6 +54,10 @@ use super::tokens::get_user_from_token;
 /// the instance to the database.
 use crate::modules::models::InstanceInformation;
 
+/// Importing the function to retrieve the first
+/// record about the current Cleo instance.
+use crate::modules::db::general::get_instance_info;
+
 /// This function attempts to
 /// retrieve a list of users
 /// present on a Cleo instance.
@@ -137,7 +141,8 @@ pub async fn create_instance_info(
     hostname: &String,
     instance_name: &String,
     smtp_username: &String,
-    smtp_pass: &String
+    smtp_pass: &String,
+    file_dir: &String
 ) -> Result<usize, CleoErr> {
     let hashed_source: String = format!("{}{}", &hostname, &instance_name);
     let instance_id: String = hash_string(&hashed_source);
@@ -148,7 +153,8 @@ pub async fn create_instance_info(
         instance_name: instance_name.to_owned(),
         smtp_server: smtp_server.to_owned(),
         smtp_username: smtp_username.to_owned(),
-        smtp_pass: smtp_pass.to_owned()
+        smtp_pass: smtp_pass.to_owned(),
+        file_dir: file_dir.to_owned()
     };
     let _insert_op = match query!(
         "INSERT INTO instance_info (instance_id, hostname, instance_name, smtp_server, smtp_username, smtp_pass) VALUES ($1, $2, $3, $4, $5, $6)",

@@ -59,6 +59,7 @@ use crate::modules::db::users::get_user_from_token;
 pub async fn create_user_file(
     api_token: &String,
     file_path: &String,
+    file_url: &String,
     pool: &Pool<Postgres>,
 ) -> Result<UserFile, CleoErr>{
     let user: CleoUser = match get_user_from_token(api_token, pool).await {
@@ -69,13 +70,15 @@ pub async fn create_user_file(
     let user_file_obj: UserFile = UserFile{
         file_id: file_id.clone(),
         user_id: user.user_id,
-        file_path: file_path.clone()
+        file_path: file_path.clone(),
+        file_url: file_url.clone()
     };
     let _insert_op = match query!(
-        "INSERT INTO user_files (file_id, user_id, file_path) VALUES ($1, $2, $3)",
+        "INSERT INTO user_files (file_id, user_id, file_path, file_url) VALUES ($1, $2, $3, $4)",
         user_file_obj.file_id,
         user_file_obj.user_id,
-        user_file_obj.file_path
+        user_file_obj.file_path,
+        user_file_obj.file_url
     )
         .execute(pool)
         .await

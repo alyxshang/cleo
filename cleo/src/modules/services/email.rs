@@ -40,10 +40,6 @@ use crate::modules::units::AppData;
 /// typing.
 use crate::modules::models::EmailToken;
 
-/// Importing the structure to extract
-/// data from an URL.
-use crate::modules::units::TokenExtractor;
-
 /// Importing the function to change the
 /// verification status of a user.
 use crate::modules::db::users::set_verified;
@@ -53,6 +49,10 @@ use crate::modules::db::users::set_verified;
 /// a write operation was successful
 /// or not.
 use crate::modules::responses::StatusResponse;
+
+/// Importing the structure to extract
+/// data from an URL.
+use crate::modules::extractors::TokenExtractor;
 
 /// Importing the function to delete an email token
 /// object from the database.

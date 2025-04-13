@@ -41,11 +41,3 @@ impl AppData{
     }
 
 }
-
-/// Declaring a structure
-/// to extract the "token"
-/// parameter from an URL.
-#[derive(Deserialize)]
-pub struct TokenExtractor{
-    pub token: String
-}

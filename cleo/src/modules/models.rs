@@ -22,7 +22,8 @@ pub struct InstanceInformation{
     pub instance_name: String,
     pub smtp_server: String,
     pub smtp_username: String,
-    pub smtp_pass: String
+    pub smtp_pass: String,
+    pub file_dir: String
 }
 
 /// A structure
@@ -51,7 +52,8 @@ pub struct CleoUser{
 pub struct UserFile{
     pub file_id: String,
     pub user_id: String,
-    pub file_path: String
+    pub file_path: String,
+    pub file_url: String
 }
 
 /// A structure

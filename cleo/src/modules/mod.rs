@@ -50,18 +50,18 @@ pub mod runner;
 
 /// Exporting the
 /// module containing
-/// this crate's
-/// API service
-/// functions.
-pub mod services;
-
-/// Exporting the
-/// module containing
 /// data structures
 /// for submitting
 /// data to different
 /// API services.
 pub mod payloads;
+
+/// Exporting the
+/// module containing
+/// this crate's
+/// API service
+/// functions.
+pub mod services;
 
 /// Exporting the 
 /// module containing
@@ -70,3 +70,8 @@ pub mod payloads;
 /// data from different
 /// API services.
 pub mod responses;
+
+/// Exporting the module
+/// containing extractors
+/// for request paths.
+pub mod extractors;

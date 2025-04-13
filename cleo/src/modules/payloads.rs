@@ -178,6 +178,7 @@ pub struct UserKeyDeletionPayload {
 #[derive(Debug, Deserialize)]
 pub struct UserFileMetadata{
     pub name: String,
+    pub api_token: String
 }
 
 /// A structure to simulate a 
@@ -185,7 +186,7 @@ pub struct UserFileMetadata{
 #[derive(Debug, MultipartForm)]
 pub struct UserFileUpload{
     #[multipart(limit = "50MB")]
-    file: TempFile,
-    json: Json<UserFileMetadata>
+    pub file: TempFile,
+    pub json: Json<UserFileMetadata>
 }
 

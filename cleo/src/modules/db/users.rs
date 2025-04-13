@@ -500,7 +500,7 @@ pub async fn user_exists_by_user_id(
         Ok(fetched_user) => true,
         Err(e) => false
     };
-    Ok(result)
+    result
 }
 
 /// This function attempts
@@ -525,5 +525,5 @@ pub async fn user_exists_by_username(
         Ok(fetched_user) => true,
         Err(e) => false
     };
-    Ok(result)
+    result
 }

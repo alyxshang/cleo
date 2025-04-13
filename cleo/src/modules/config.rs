@@ -151,10 +151,11 @@ pub fn create_config() -> Result<Config, CleoErr>{
 /// an error is returned.
 pub async fn create_admin_info(config: &Config) -> Result<AdminInfo, CleoErr>{
     let db_url: String = format!(
-        "postgres://{}:{}@{}/cleo", 
+        "postgres://{}:{}@{}:{}/cleo", 
         config.postgres_user, 
         config.postgres_pass, 
-        config.postgres_host
+        config.postgres_host,
+        config.postgres_port
     );
     let app_addr: String = format!(
         "{}:{}", 

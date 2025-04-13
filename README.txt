@@ -4,6 +4,8 @@
 # TODO
 - tests
 - documentation
+- html verification
+- email expression verification
 
 # SLOC
 ~ 2500

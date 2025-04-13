@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM email_tokens WHERE email_token = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "etoken_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "email_token",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "38ec8e8f451de1e5b1bc0ce3844d493756a1f567f58ba2ab81c841a6a6d0d9db"
+}

@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM user_keys WHERE user_key = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "key_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_key",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "key_type",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "key_used",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "username",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "38539dff71d34ae88bc01f00e8b67f52dcd3cf9f57bdddb3540cc3f4129dd8fd"
+}

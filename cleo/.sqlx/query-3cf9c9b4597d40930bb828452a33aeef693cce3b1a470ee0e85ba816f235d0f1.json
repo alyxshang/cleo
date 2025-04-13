@@ -1,0 +1,64 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM cleo_users WHERE is_admin = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_id",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "display_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "is_verified",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "username",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "pwd",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "email_addr",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "pfp_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "is_admin",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "3cf9c9b4597d40930bb828452a33aeef693cce3b1a470ee0e85ba816f235d0f1"
+}

@@ -215,31 +215,6 @@ pub async fn set_verified(
     Ok(update_op)
 }
 
-/// This function attempts to retrieve
-/// an instance of the "CleoUser" structure
-/// given the user's current email token.
-/// If this operation is successful, an
-/// instance of the "CleoUser" structure
-/// is returned. If this operation fails,
-/// an error is returned.
-pub async fn get_user_from_email_token(
-    token: &str,
-    pool: &Pool<Postgres>
-) -> Result<CleoUser, CleoErr> {
-    let uat_obj: CleoUser = match query_as!(
-        CleoUser,
-        "SELECT * FROM cleo_users WHERE email_token_verif = $1", 
-        token
-    )
-        .fetch_one(pool)
-        .await 
-    {
-        Ok(uat_obj) => uat_obj,
-        Err(e) => return Err::<CleoUser, CleoErr>(CleoErr::new(&e.to_string()))
-    };
-    Ok(uat_obj)
-}
-
 /// This function attempts to
 /// update the username of a user.
 /// If this operation is successful,
@@ -481,7 +456,6 @@ pub async fn user_exists_by_user_id(
     user_id: &String,
     pool: &Pool<Postgres>,
 ) -> bool {
-    let result: bool;
     let fetched_user: bool = match query_as!(
         CleoUser,
         "SELECT * FROM cleo_users WHERE user_id = $1",
@@ -493,7 +467,7 @@ pub async fn user_exists_by_user_id(
         Ok(fetched_user) => true,
         Err(e) => false
     };
-    result
+    fetched_user
 }
 
 /// This function attempts
@@ -506,7 +480,6 @@ pub async fn user_exists_by_username(
     username: &String,
     pool: &Pool<Postgres>,
 ) -> bool {
-    let result: bool;
     let fetched_user: bool = match query_as!(
         CleoUser,
         "SELECT * FROM cleo_users WHERE username = $1",
@@ -518,5 +491,5 @@ pub async fn user_exists_by_username(
         Ok(fetched_user) => true,
         Err(e) => false
     };
-    result
+    fetched_user
 }

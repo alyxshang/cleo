@@ -108,7 +108,10 @@ pub fn create_config() -> Result<Config, CleoErr>{
         Ok(postgres_user) => postgres_user,
         Err(e) => return Err::<Config, CleoErr>(CleoErr::new(&e.to_string()))
     };
-    let postgres_host: String = match var("CLEO_POSTGRES_HOST"){
+    let postgres_port: String = match var("CLEO_POSTGRES_PORT"){
+        Ok(postgres_port) => postgres_port,
+        Err(e) => return Err::<Config, CleoErr>(CleoErr::new(&e.to_string()))
+    };    let postgres_host: String = match var("CLEO_POSTGRES_HOST"){
         Ok(postgres_host) => postgres_host,
         Err(e) => return Err::<Config, CleoErr>(CleoErr::new(&e.to_string()))
     };
@@ -133,6 +136,7 @@ pub fn create_config() -> Result<Config, CleoErr>{
         admin_display_name: admin_display_name,
         postgres_user: postgres_user,
         postgres_host: postgres_host,
+        postgres_port: postgres_port,
         postgres_pass: postgres_pass,
         file_storage_dir: file_dir
     };

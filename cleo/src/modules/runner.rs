@@ -124,7 +124,6 @@ pub async fn run_app() -> Result<(), CleoErr> {
                 .service(create_user_service)
                 .service(update_username_service)
                 .service(update_name_service)
-                .service(update_email_service)
                 .service(update_pfp_service)
                 .service(update_password_service)
                 .service(delete_user_service)

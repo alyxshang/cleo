@@ -58,6 +58,7 @@ pub struct Config{
     pub admin_password: String,
     pub admin_display_name: String,
     pub postgres_user: String,
+    pub postgres_port: String,
     pub postgres_host: String,
     pub postgres_pass: String,
     pub file_storage_dir: String

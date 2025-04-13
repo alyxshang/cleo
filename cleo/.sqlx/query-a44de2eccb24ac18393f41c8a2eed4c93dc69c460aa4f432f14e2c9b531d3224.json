@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO email_tokens (etoken_id, email_token, user_id) VALUES ($1, $2, $3)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a44de2eccb24ac18393f41c8a2eed4c93dc69c460aa4f432f14e2c9b531d3224"
+}

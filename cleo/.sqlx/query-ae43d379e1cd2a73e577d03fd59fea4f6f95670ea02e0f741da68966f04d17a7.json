@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE extra_content_fields SET field_key = $1 WHERE field_id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ae43d379e1cd2a73e577d03fd59fea4f6f95670ea02e0f741da68966f04d17a7"
+}

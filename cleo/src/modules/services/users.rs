@@ -57,10 +57,6 @@ use crate::modules::db::users::update_pfp;
 /// to create a new user.
 use crate::modules::db::users::create_user;
 
-/// Importing the function to
-/// update the email of a user.
-use crate::modules::db::users::update_email;
-
 /// Importing the data structure
 /// for returning info on whether
 /// a write operation was successful
@@ -233,28 +229,6 @@ pub async fn update_name_service(
     ).await {
         Ok(_op) => true,
         Err(_e) => false    
-    };
-    HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
-}
-
-/// This function is the API service
-/// function for editing a user's
-/// email address. If the received request 
-/// and resulting operation are both valid, an 
-/// instance of the "StatusResponse" with a 
-/// boolean flag is returned as a JSON response. 
-#[post("/user/update/email")]
-pub async fn update_email_service(
-    payload: Json<UserChangePayload>,
-    data: Data<AppData>
-) -> HttpResponse {
-    let update_op: bool = match update_email(
-        &payload.api_token, 
-        &payload.new_value, 
-        &data.pool
-    ).await {
-        Ok(_op) => true,
-        Err(_e) => false
     };
     HttpResponse::Ok().json(StatusResponse{ is_ok: update_op })
 }

@@ -1,6 +1,5 @@
 /*
 # ADMIN
-
 /instance/admins
 /instance/users
 /instance/edit/name
@@ -10,11 +9,13 @@
 /instance/edit/smtp/pass
 
 # ECF
-
 /ecf/create
 /ecf/delete
 /ecf/edit/key
 /ecf/edit/value
+
+# EMAIL
+/email/{token}
 
 # POSTS
 /posts/create

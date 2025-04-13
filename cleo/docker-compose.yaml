@@ -1,0 +1,28 @@
+services:
+  api:
+    hostname: "cleo_backend"
+    environment:
+      DATABASE_URL: "postgres://postgres:${POSTGRES_PASSWORD}@db:5432"
+      ACTIX_PORT: "3000"
+      ACTIX_HOST: "0.0.0.0"
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "db"
+  db:
+    hostname: "db_service"
+    image: postgres:15.2-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    driver: local

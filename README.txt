@@ -7,7 +7,6 @@
 - file uploads
 - documentation
 - serving static files
-- Dockerization
 
 # SLOC
 ~ 2500

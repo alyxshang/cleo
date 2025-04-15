@@ -6,7 +6,7 @@
 - documentation
 - html verification
 - email expression verification
-- bulk deletion of a user's entities upon account deletion
+- bulk deletion of a user's entities upon account deletion including wiping files uploaded from disk
 
 
 # SLOC
